@@ -19,6 +19,9 @@ Reference Website : https://balcomedicalcentre.com/
 
 * Mysql
 
+### DB Schema :
+
+* [DBDiagram](https://dbdiagram.io/d/62fc949dc2d9cf52fac018af)
 
 ### Login : JWT
 
