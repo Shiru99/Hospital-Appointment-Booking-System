@@ -1,4 +1,4 @@
-# Appointment booking system for Patient
+# Appointment booking system
 
 ## Description
 
@@ -39,6 +39,10 @@ Reference Website : https://balcomedicalcentre.com/
 1. UI Microservice
 
 ### Design :
+
+* [mockflow](https://wireframepro.mockflow.com/view/Appointment-booking-system)
+
+### Templates :
 
 * https://app.uizard.io/prototypes?create
 
