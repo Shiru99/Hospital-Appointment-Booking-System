@@ -20,12 +20,14 @@ import get.sterlite.Authentication.model.AuthenticationResponse;
 import get.sterlite.Authentication.model.LoginRequest;
 import get.sterlite.Authentication.service.UserService;
 import get.sterlite.Authentication.util.JwtUtil;
+import get.sterlite.service.PatientService;
 
 @TestInstance(Lifecycle.PER_CLASS)
 public class AuthenticationLoginControllerTest {
     
     private AuthenticationController authenticationController;
     private UserService userService;
+    private PatientService patientService;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -35,9 +37,11 @@ public class AuthenticationLoginControllerTest {
     @BeforeAll
     void setup() {
         userService = mock(UserService.class);
+        patientService = mock(PatientService.class);
        
         authenticationController = new AuthenticationController();
         authenticationController.userService = userService;
+        authenticationController.patientService = patientService;
         authenticationController.passwordEncoder = passwordEncoder();
         authenticationController.jwtTokenUtil = new JwtUtil();
     }
@@ -77,12 +81,33 @@ public class AuthenticationLoginControllerTest {
     }
 
     @Test
-    @DisplayName("Create JWT token with valid credentials login")
+    @DisplayName("Create JWT token with invalid credentials login")
     void testCreateAuthenticationToken3() throws Exception {
 
         LoginRequest loginRequest = new LoginRequest("1234567890", "1234");
 
         when(userService.getUserPassword(loginRequest.getMobileNum())).thenReturn("$2a$10$oCRuhNF0fDycAy9TdbdtOeZ8QcnH4JdkdH.8Hty.iDZNg0hBNNttS");
+
+        when(patientService.isPatientExist(loginRequest.getMobileNum())).thenReturn(false);
+
+        ResponseEntity<?> response =  authenticationController.loginAndCreateAuthenticationToken(loginRequest);
+
+        assertEquals(401, response.getStatusCodeValue());
+        
+        AuthenticationFailResponse authenticationFailResponse = (AuthenticationFailResponse) response.getBody();
+
+        assertEquals("Doctor can't login as `Patient`", authenticationFailResponse.getMessage());
+    }
+
+    @Test
+    @DisplayName("Create JWT token with valid credentials login")
+    void testCreateAuthenticationToken4() throws Exception {
+
+        LoginRequest loginRequest = new LoginRequest("1234567890", "1234");
+
+        when(userService.getUserPassword(loginRequest.getMobileNum())).thenReturn("$2a$10$oCRuhNF0fDycAy9TdbdtOeZ8QcnH4JdkdH.8Hty.iDZNg0hBNNttS");
+
+        when(patientService.isPatientExist(loginRequest.getMobileNum())).thenReturn(true);
 
         ResponseEntity<?> response =  authenticationController.loginAndCreateAuthenticationToken(loginRequest);
 

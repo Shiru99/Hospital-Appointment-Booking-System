@@ -41,6 +41,9 @@ class AuthenticationController {
 				loginRequest.getPassword(),
 					userService.getUserPassword(loginRequest.getMobileNum()));
 			if (passwordMatch) {
+				if(!patientService.isPatientExist(loginRequest.getMobileNum())) {
+					throw new Exception("Doctor can't login as `Patient`");
+				}
 				final String jwt = jwtTokenUtil.generateToken(loginRequest.getMobileNum());
 				return ResponseEntity.ok(new AuthenticationResponse(jwt));
 			} else {

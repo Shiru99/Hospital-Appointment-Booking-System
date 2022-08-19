@@ -39,7 +39,7 @@ public class PatientsController {
         return patientService.getAllPatients();
     }
 
-    @RequestMapping(value ="/patients/{id}", produces = "application/json")
+    @GetMapping(value ="/patients/{id}", produces = "application/json")
     public PatientResponse getPatientByID(@PathVariable("id") String id) {
         return patientService.getPatient(id);
     }
