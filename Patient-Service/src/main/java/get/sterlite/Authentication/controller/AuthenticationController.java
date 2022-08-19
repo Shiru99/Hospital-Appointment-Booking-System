@@ -35,7 +35,7 @@ class AuthenticationController {
 	protected PasswordEncoder passwordEncoder;
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public ResponseEntity<?> createAuthenticationToken(@RequestBody LoginRequest loginRequest) {
+	public ResponseEntity<?> loginAndCreateAuthenticationToken(@RequestBody LoginRequest loginRequest) {
 		try {
 			boolean passwordMatch = passwordEncoder.matches(
 				loginRequest.getPassword(),
