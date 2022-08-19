@@ -1,10 +1,8 @@
 package get.sterlite.Authentication.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,20 +27,40 @@ class AuthenticationController {
 	@Autowired
 	protected PasswordEncoder passwordEncoder;
 
-	@RequestMapping(value = "/authenticate", method = RequestMethod.POST)
+	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) {
+		try {
+			boolean passwordMatch = passwordEncoder.matches(
+					authenticationRequest.getPassword(),
+					userService.getUserPassword(authenticationRequest.getMobileNum()));
 
-		boolean passwordMatch = passwordEncoder.matches(
-				authenticationRequest.getPassword(), userService.getUserPassword(authenticationRequest.getMobileNum()));
-
-		if (passwordMatch) {
-			final String jwt = jwtTokenUtil.generateToken(authenticationRequest.getMobileNum());
-			return ResponseEntity.ok(new AuthenticationResponse(jwt));
-		} else {
+			if (passwordMatch) {
+				final String jwt = jwtTokenUtil.generateToken(authenticationRequest.getMobileNum());
+				return ResponseEntity.ok(new AuthenticationResponse(jwt));
+			} else {
+				throw new Exception("Invalid Credentials");
+			}
+		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-					.body(new AuthenticationFailResponse("Invalid Credentials"));
+					.body(new AuthenticationFailResponse(e.getMessage()));
 		}
+	}
 
+	@RequestMapping(value = "/signup", method = RequestMethod.POST)
+	public ResponseEntity<?> signupAndCreateAuthenticationToken(
+			@RequestBody AuthenticationRequest authenticationRequest) {
+		try {
+			userService.saveUser(authenticationRequest);
+
+			final String jwt = jwtTokenUtil
+				.generateToken(authenticationRequest.getMobileNum());
+				
+			return ResponseEntity.ok(new AuthenticationResponse(jwt));
+
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+					.body(new AuthenticationFailResponse(e.getMessage()));
+		}
 	}
 
 }

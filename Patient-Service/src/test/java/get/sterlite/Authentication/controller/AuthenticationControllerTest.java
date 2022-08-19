@@ -12,6 +12,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import get.sterlite.Authentication.model.AuthenticationFailResponse;
@@ -41,11 +42,26 @@ public class AuthenticationControllerTest {
         authenticationController.passwordEncoder = passwordEncoder();
         authenticationController.jwtTokenUtil = new JwtUtil();
     }
+    @Test
+    @DisplayName("Testing Create JWT token with non-existing user")
+    void testCreateAuthenticationToken1() {
 
+        AuthenticationRequest authenticationRequest = new AuthenticationRequest("1234567800", "1234");
+
+        when(userService.getUserPassword(authenticationRequest.getMobileNum())).thenThrow(new UsernameNotFoundException("User not found with mobileNum: " + authenticationRequest.getMobileNum()));
+
+        ResponseEntity response =  authenticationController.createAuthenticationToken(authenticationRequest);
+
+        assertEquals(401, response.getStatusCodeValue());
+        
+        AuthenticationFailResponse authenticationFailResponse = (AuthenticationFailResponse) response.getBody();
+
+        assertEquals("User not found with mobileNum: " + authenticationRequest.getMobileNum(), authenticationFailResponse.getMessage());
+    }
 
     @Test
     @DisplayName("Testing Create JWT token with invalid credentials")
-    void testCreateAuthenticationToken1() {
+    void testCreateAuthenticationToken2() {
 
         AuthenticationRequest authenticationRequest = new AuthenticationRequest("1234567890", "1235");
 
@@ -62,7 +78,7 @@ public class AuthenticationControllerTest {
 
     @Test
     @DisplayName("Testing Create JWT token with valid credentials")
-    void testCreateAuthenticationToken2() {
+    void testCreateAuthenticationToken3() throws Exception {
 
         AuthenticationRequest authenticationRequest = new AuthenticationRequest("1234567890", "1234");
 

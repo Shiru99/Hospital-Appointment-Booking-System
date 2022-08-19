@@ -1,7 +1,6 @@
 package get.sterlite.Authentication.filter;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -18,7 +17,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import get.sterlite.Authentication.model.AuthenticationFailResponse;
 import get.sterlite.Authentication.util.JwtUtil;
-import io.jsonwebtoken.MalformedJwtException;
 
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
@@ -45,7 +43,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
                     SecurityContextHolder.getContext().setAuthentication(UPAuthenticationToken);
                 }
-            } catch (MalformedJwtException e) {
+            } catch (Exception e) {
 
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.setContentType("application/json");
