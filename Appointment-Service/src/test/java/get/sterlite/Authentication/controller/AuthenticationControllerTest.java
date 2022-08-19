@@ -50,7 +50,7 @@ public class AuthenticationControllerTest {
 
         when(userService.getUserPassword(authenticationRequest.getMobileNum())).thenThrow(new UsernameNotFoundException("User not found with mobileNum: " + authenticationRequest.getMobileNum()));
 
-        ResponseEntity response =  authenticationController.createAuthenticationToken(authenticationRequest);
+        ResponseEntity<?> response =  authenticationController.createAuthenticationToken(authenticationRequest);
 
         assertEquals(401, response.getStatusCodeValue());
         
@@ -67,7 +67,7 @@ public class AuthenticationControllerTest {
 
         when(userService.getUserPassword(authenticationRequest.getMobileNum())).thenReturn("$2a$10$oCRuhNF0fDycAy9TdbdtOeZ8QcnH4JdkdH.8Hty.iDZNg0hBNNttS");
 
-        ResponseEntity response =  authenticationController.createAuthenticationToken(authenticationRequest);
+        ResponseEntity<?> response =  authenticationController.createAuthenticationToken(authenticationRequest);
 
         assertEquals(401, response.getStatusCodeValue());
         
@@ -84,7 +84,7 @@ public class AuthenticationControllerTest {
 
         when(userService.getUserPassword(authenticationRequest.getMobileNum())).thenReturn("$2a$10$oCRuhNF0fDycAy9TdbdtOeZ8QcnH4JdkdH.8Hty.iDZNg0hBNNttS");
 
-        ResponseEntity response =  authenticationController.createAuthenticationToken(authenticationRequest);
+        ResponseEntity<?> response =  authenticationController.createAuthenticationToken(authenticationRequest);
 
         assertEquals(200, response.getStatusCodeValue());
         
