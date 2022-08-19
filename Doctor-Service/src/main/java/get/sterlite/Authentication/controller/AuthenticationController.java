@@ -1,5 +1,7 @@
 package get.sterlite.Authentication.controller;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,7 @@ import get.sterlite.Authentication.model.LoginRequest;
 import get.sterlite.Authentication.model.SignupRequest;
 import get.sterlite.Authentication.service.UserService;
 import get.sterlite.Authentication.util.JwtUtil;
+import get.sterlite.service.DoctorService;
 
 @RestController
 class AuthenticationController {
@@ -26,15 +29,21 @@ class AuthenticationController {
 	protected UserService userService;
 
 	@Autowired
+    DoctorService doctorService;
+
+	@Autowired
 	protected PasswordEncoder passwordEncoder;
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public ResponseEntity<?> createAuthenticationToken(@RequestBody LoginRequest loginRequest) {
+	public ResponseEntity<?> loginAndCreateAuthenticationToken(@RequestBody LoginRequest loginRequest) {
 		try {
 			boolean passwordMatch = passwordEncoder.matches(
 				loginRequest.getPassword(),
 					userService.getUserPassword(loginRequest.getMobileNum()));
 			if (passwordMatch) {
+				if(!doctorService.isDoctorExist(loginRequest.getMobileNum())) {
+					throw new Exception("Patient can't login as `Doctor`");
+				}
 				final String jwt = jwtTokenUtil.generateToken(loginRequest.getMobileNum());
 				return ResponseEntity.ok(new AuthenticationResponse(jwt));
 			} else {
@@ -46,11 +55,16 @@ class AuthenticationController {
 		}
 	}
 
+	@Transactional
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
 	public ResponseEntity<?> signupAndCreateAuthenticationToken(
 			@RequestBody SignupRequest signupRequest) {
 		try {
+			if(signupRequest.getFullName() == null || signupRequest.getFullName().isEmpty()) {
+				throw new Exception("Full Name is required");
+			}
 			userService.saveUser(signupRequest);
+			doctorService.saveDoctor(signupRequest);
 			final String jwt = jwtTokenUtil
 				.generateToken(signupRequest.getMobileNum());
 			return ResponseEntity.ok(new AuthenticationResponse(jwt));

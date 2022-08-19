@@ -15,7 +15,7 @@ CREATE TABLE `Patients` (
 CREATE TABLE `Doctors` (
   `doctor_id` varchar(255) PRIMARY KEY,
   `full_name` varchar(255),
-  `department` ENUM ('Cardiology', 'Neurology', 'Orthopedics', 'Gastroenterology', 'Dermatology', 'Urology', 'Oncology', 'Radiology'),
+  `department` ENUM ('UNKNOWN', 'Cardiology', 'Neurology', 'Orthopedics', 'Gastroenterology', 'Dermatology', 'Urology', 'Oncology', 'Radiology'),
   `degree` varchar(255),
   `profile_URL` varchar(255)
 );
@@ -32,8 +32,8 @@ CREATE TABLE `Appointments` (
   `doctor_id` varchar(255),
   `patient_id` varchar(255),
   `date` date,
-  `slot` ENUM ('Morning1', 'Morning2', 'Morning3', 'Afternoon1', 'Afternoon2', 'Afternoon3', 'Evening1', 'Evening2', 'Evening3'),
-  `status` ENUM ('Done', 'Active', 'Cancelled'),
+  `slot` ENUM ('UNKNOWN', 'Morning1', 'Morning2', 'Morning3', 'Afternoon1', 'Afternoon2', 'Afternoon3', 'Evening1', 'Evening2', 'Evening3'),
+  `status` ENUM ('UNKNOWN', 'Done', 'Active', 'Cancelled'),
   `message` varchar(1000)
 );
 
