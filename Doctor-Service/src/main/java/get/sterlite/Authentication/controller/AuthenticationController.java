@@ -10,8 +10,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import get.sterlite.Authentication.model.AuthenticationFailResponse;
-import get.sterlite.Authentication.model.AuthenticationRequest;
 import get.sterlite.Authentication.model.AuthenticationResponse;
+import get.sterlite.Authentication.model.LoginRequest;
+import get.sterlite.Authentication.model.SignupRequest;
 import get.sterlite.Authentication.service.UserService;
 import get.sterlite.Authentication.util.JwtUtil;
 
@@ -28,14 +29,13 @@ class AuthenticationController {
 	protected PasswordEncoder passwordEncoder;
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) {
+	public ResponseEntity<?> createAuthenticationToken(@RequestBody LoginRequest loginRequest) {
 		try {
 			boolean passwordMatch = passwordEncoder.matches(
-					authenticationRequest.getPassword(),
-					userService.getUserPassword(authenticationRequest.getMobileNum()));
-
+				loginRequest.getPassword(),
+					userService.getUserPassword(loginRequest.getMobileNum()));
 			if (passwordMatch) {
-				final String jwt = jwtTokenUtil.generateToken(authenticationRequest.getMobileNum());
+				final String jwt = jwtTokenUtil.generateToken(loginRequest.getMobileNum());
 				return ResponseEntity.ok(new AuthenticationResponse(jwt));
 			} else {
 				throw new Exception("Invalid Credentials");
@@ -48,13 +48,11 @@ class AuthenticationController {
 
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
 	public ResponseEntity<?> signupAndCreateAuthenticationToken(
-			@RequestBody AuthenticationRequest authenticationRequest) {
+			@RequestBody SignupRequest signupRequest) {
 		try {
-			userService.saveUser(authenticationRequest);
-
+			userService.saveUser(signupRequest);
 			final String jwt = jwtTokenUtil
-				.generateToken(authenticationRequest.getMobileNum());
-				
+				.generateToken(signupRequest.getMobileNum());
 			return ResponseEntity.ok(new AuthenticationResponse(jwt));
 
 		} catch (Exception e) {

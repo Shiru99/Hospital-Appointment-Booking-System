@@ -2,12 +2,12 @@ package get.sterlite.Authentication.model;
 
 import java.io.Serializable;
 
-public class AuthenticationRequest implements Serializable {
+public class LoginRequest implements Serializable {
 
     private String mobileNum;
     private String password;
 
-    public AuthenticationRequest(String mobileNum, String password) {
+    public LoginRequest(String mobileNum, String password) {
         this.setMobileNum(mobileNum);
         this.setPassword(password);
     }
