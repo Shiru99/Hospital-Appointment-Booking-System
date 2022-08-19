@@ -1,5 +1,7 @@
 package get.sterlite.Authentication.controller;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,7 @@ import get.sterlite.Authentication.model.LoginRequest;
 import get.sterlite.Authentication.model.SignupRequest;
 import get.sterlite.Authentication.service.UserService;
 import get.sterlite.Authentication.util.JwtUtil;
+import get.sterlite.service.PatientService;
 
 @RestController
 class AuthenticationController {
@@ -24,6 +27,9 @@ class AuthenticationController {
 
 	@Autowired
 	protected UserService userService;
+
+	@Autowired
+    PatientService patientService;
 
 	@Autowired
 	protected PasswordEncoder passwordEncoder;
@@ -46,11 +52,16 @@ class AuthenticationController {
 		}
 	}
 
+	@Transactional
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
 	public ResponseEntity<?> signupAndCreateAuthenticationToken(
 			@RequestBody SignupRequest signupRequest) {
 		try {
+			if(signupRequest.getFullName() == null || signupRequest.getFullName().isEmpty()) {
+				throw new Exception("Full Name is required");
+			}
 			userService.saveUser(signupRequest);
+			patientService.savePatient(signupRequest);
 			final String jwt = jwtTokenUtil
 				.generateToken(signupRequest.getMobileNum());
 			return ResponseEntity.ok(new AuthenticationResponse(jwt));
