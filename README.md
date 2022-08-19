@@ -25,6 +25,35 @@ Reference Website : https://balcomedicalcentre.com/
 
 ### Login : JWT
 
+### APIs needed : 
+
+1. Login:
+
+    * POST /login
+
+2. Patient :
+
+    * POST /signup
+    * GET /patients
+    * GET /patients/{id}
+    * PUT /patients/{id}
+    * DELETE /patients/{id}
+
+3. Doctor :
+        
+    * POST /signup
+    * GET /doctors
+    * GET /doctors/{id}
+    * PUT /doctors/{id}
+    * DELETE /doctors/{id}
+
+4. Appointment :
+
+    * POST /appointments
+    * GET /appointments
+    * GET /appointments/{id}
+    * PUT /appointments/{id}
+    * DELETE /appointments/{id}
 
 ### Testing : JUnit & [Thunder Client](https://marketplace.visualstudio.com/items?itemName=rangav.vscode-thunder-client)
 
@@ -32,8 +61,6 @@ Reference Website : https://balcomedicalcentre.com/
 2. Doctor
 3. Booking
 4. Payment
-
-
 
 ---
 
