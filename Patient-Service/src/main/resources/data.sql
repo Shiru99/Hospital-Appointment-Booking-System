@@ -44,13 +44,13 @@ VALUES
 
 -- password : 1234
 
-INSERT INTO `Patients` (`mobile_num`, `full_name`)
+INSERT INTO `Patients` (`patient_id`, `full_name`)
 VALUES  ( '1234567890', 'John Doe' ),
         ( '1234567891', 'jenny Doe');
 
 
 INSERT INTO `Doctors` (
-    `mobile_num`, `full_name`, `department`, `degree`, `profile_URL`)
+    `doctor_id`, `full_name`, `department`, `degree`, `profile_URL`)
 VALUES
   ( '1234567892', 'Dr. Deba Dulal Biswal', 'Cardiology', 'MBBS, MD (General Medicine), DNB (Medical Oncology)', 'https://balcomedicalcentre.com/uploads/doctor/dr-deba-dulal-biswal.jpg' ),
   ( '1234567893', 'Dr. Sweta Shivratan Soni', 'Neurology', 'DNB (Radiation Oncology), MNAMS, PDCR, ECMO', 'https://balcomedicalcentre.com/uploads/doctor/dr-sweta-shivratan-soni.jpg'),
@@ -89,7 +89,7 @@ VALUES
 
 
 -- DELETE FROM `Users` WHERE `mobile_num`='1234567899';
--- DELETE FROM `Doctors` WHERE `mobile_num`='1234567896';
+-- DELETE FROM `Doctors` WHERE `doctor_id`='1234567896';
 -- DELETE FROM `Users` WHERE `mobile_num`='1234567892';
 -- DELETE FROM `Users` WHERE `mobile_num`='1234567890';
 
