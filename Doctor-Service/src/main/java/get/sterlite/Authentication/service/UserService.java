@@ -6,8 +6,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import get.sterlite.Authentication.model.LoginUser;
-import get.sterlite.Authentication.model.SignupRequest;
 import get.sterlite.Authentication.repository.LoginUserRepository;
+import get.sterlite.model.Doctor;
 
 @Service("userService")
 public class UserService {
@@ -30,14 +30,14 @@ public class UserService {
         return loginUserRepository.findByMobileNum(mobileNum).isPresent();
     }
 
-    public void saveUser(SignupRequest signupRequest) {
-        if (!isUserExist(signupRequest.getMobileNum())) {
-            LoginUser loginUser = new LoginUser(signupRequest.getMobileNum(),
-                    passwordEncoder.encode(signupRequest.getPassword()));
+    public void saveUser(Doctor doctor) {
+        if (!isUserExist(doctor.getMobileNum())) {
+            LoginUser loginUser = new LoginUser(doctor.getMobileNum(),
+                    passwordEncoder.encode(doctor.getPassword()));
 
             loginUserRepository.save(loginUser);
         } else {
-            throw new RuntimeException("User already exist with mobileNum: " + signupRequest.getMobileNum());
+            throw new RuntimeException("User already exist with mobileNum: " + doctor.getMobileNum());
         }
     }
 }
