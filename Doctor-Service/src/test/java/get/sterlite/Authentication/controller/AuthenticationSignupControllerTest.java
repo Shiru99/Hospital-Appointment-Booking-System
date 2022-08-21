@@ -1,8 +1,10 @@
 package get.sterlite.Authentication.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -13,12 +15,15 @@ import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.validation.BindingResult;
 
 import get.sterlite.Authentication.model.AuthenticationFailResponse;
 import get.sterlite.Authentication.model.AuthenticationResponse;
-import get.sterlite.Authentication.model.SignupRequest;
 import get.sterlite.Authentication.service.UserService;
 import get.sterlite.Authentication.util.JwtUtil;
+import get.sterlite.Exception.InvalidInputsException;
+import get.sterlite.model.Department;
+import get.sterlite.model.Doctor;
 import get.sterlite.service.DoctorService;
 
 @TestInstance(Lifecycle.PER_CLASS)
@@ -27,6 +32,7 @@ public class AuthenticationSignupControllerTest {
     private AuthenticationController authenticationController;
     private UserService userService;
     private DoctorService doctorService;
+    private BindingResult errors;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -37,6 +43,8 @@ public class AuthenticationSignupControllerTest {
     void setup() {
         userService = mock(UserService.class);
         doctorService = mock(DoctorService.class);
+        errors = mock(BindingResult.class);
+
        
         authenticationController = new AuthenticationController();
         authenticationController.userService = userService;
@@ -47,67 +55,49 @@ public class AuthenticationSignupControllerTest {
 
     @Test
     @DisplayName("Create JWT token with invalid signup details")
-    void testCreateAuthenticationToken1() {
+    void testCreateAuthenticationToken1() throws Exception {
 
-        SignupRequest signupRequest = new SignupRequest("1234567889", "1234", "");
+        Doctor doctor = new Doctor("1234567889", "1234", "Dr. x", Department.Radiology, "I.T.U.S.", "");
 
-        ResponseEntity<?> response =  authenticationController.signupAndCreateAuthenticationToken(signupRequest);
+        when(errors.hasErrors()).thenReturn(true);
 
-        assertEquals(401, response.getStatusCodeValue());
+        assertThrows(InvalidInputsException.class, () -> authenticationController.signupAndCreateAuthenticationToken(doctor, errors));
         
-        AuthenticationFailResponse authenticationFailResponse = (AuthenticationFailResponse) response.getBody();
-
-        assertEquals("Full Name is required", authenticationFailResponse.getMessage());
     }
 
     @Test
     @DisplayName("Create JWT token with existing user signup")
-    void testCreateAuthenticationToken2() {
+    void testCreateAuthenticationToken2() throws Exception {
 
-        SignupRequest signupRequest = new SignupRequest("1234567890", "1234", "blah blah");
+        Doctor doctor = new Doctor("1234567899", "1234", "Dr. x", Department.Radiology, "I.T.U.S.", "google.com");
 
-        Mockito.doThrow(new RuntimeException("User already exist with mobileNum: " + signupRequest.getMobileNum())).when(userService).saveUser(signupRequest);
+        when(errors.hasErrors()).thenReturn(false);
 
-        ResponseEntity<?> response =  authenticationController.signupAndCreateAuthenticationToken(signupRequest);
+        Mockito.doThrow(new RuntimeException("User already exist with mobileNum: " + doctor.getMobileNum())).when(userService).saveUser(doctor);
 
-        assertEquals(401, response.getStatusCodeValue());
-        
-        AuthenticationFailResponse authenticationFailResponse = (AuthenticationFailResponse) response.getBody();
-
-        assertEquals("User already exist with mobileNum: " + signupRequest.getMobileNum(), authenticationFailResponse.getMessage());
-    }
-
-    @Test
-    @DisplayName("Create JWT token with existing user signup")
-    void testCreateAuthenticationToken3() {
-
-        SignupRequest signupRequest = new SignupRequest("1234567890", "1234", "blah blah");
-
-        Mockito.doNothing().when(userService).saveUser(signupRequest);
-
-        Mockito.doThrow(new RuntimeException("Doctor already exist with Doctor ID: " + signupRequest.getMobileNum())).when(doctorService).saveDoctor(signupRequest);
-        
-
-        ResponseEntity<?> response =  authenticationController.signupAndCreateAuthenticationToken(signupRequest);
+        ResponseEntity<?> response =  authenticationController.signupAndCreateAuthenticationToken(doctor, errors);
 
         assertEquals(401, response.getStatusCodeValue());
         
         AuthenticationFailResponse authenticationFailResponse = (AuthenticationFailResponse) response.getBody();
 
-        assertEquals("Doctor already exist with Doctor ID: " + signupRequest.getMobileNum(), authenticationFailResponse.getMessage());
+        assertEquals("User already exist with mobileNum: " + doctor.getMobileNum(), authenticationFailResponse.getMessage());
     }
 
+    
     @Test
     @DisplayName("Create JWT token with valid credentials")
     void testCreateAuthenticationToken4() throws Exception {
 
-        SignupRequest signupRequest = new SignupRequest("1234567800", "1234", "blah blah");
+        Doctor doctor = new Doctor("1234567888", "1234", "Dr. x", Department.Radiology, "I.T.U.S.", "google.com");
+
+        when(errors.hasErrors()).thenReturn(false);
         
-        Mockito.doNothing().when(userService).saveUser(signupRequest);
+        Mockito.doNothing().when(userService).saveUser(doctor);
 
-        Mockito.doNothing().when(doctorService).saveDoctor(signupRequest);
+        Mockito.doNothing().when(doctorService).saveDoctor(doctor);
 
-        ResponseEntity<?> response =  authenticationController.signupAndCreateAuthenticationToken(signupRequest);
+        ResponseEntity<?> response =  authenticationController.signupAndCreateAuthenticationToken(doctor, errors);
 
         assertEquals(200, response.getStatusCodeValue());
         
