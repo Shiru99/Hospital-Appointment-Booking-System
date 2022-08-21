@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import get.sterlite.Authentication.model.LoginUser;
 import get.sterlite.Authentication.repository.LoginUserRepository;
 import get.sterlite.model.Doctor;
-import get.sterlite.model.DoctorResponse;
 
 @Service("userService")
 public class UserService {

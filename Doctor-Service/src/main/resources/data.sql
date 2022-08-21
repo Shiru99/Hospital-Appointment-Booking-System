@@ -53,7 +53,7 @@ INSERT INTO `Doctors` (
     `doctor_id`, `full_name`, `department`, `degree`, `profile_URL`)
 VALUES
   ( '1234567892', 'Dr. Deba Dulal Biswal', 'Cardiology', 'MBBS, MD (General Medicine), DNB (Medical Oncology)', 'https://balcomedicalcentre.com/uploads/doctor/dr-deba-dulal-biswal.jpg' ),
-  ( '1234567893', 'Dr. Sweta Shivratan Soni', 'Neurology', 'DNB (Radiation Oncology), MNAMS, PDCR, ECMO', 'https://balcomedicalcentre.com/uploads/doctor/dr-sweta-shivratan-soni.jpg'),
+  ( '1234567893', 'Dr. Radha Shivratan Soni', 'Neurology', 'DNB (Radiation Oncology), MNAMS, PDCR, ECMO', 'https://balcomedicalcentre.com/uploads/doctor/dr-sweta-shivratan-soni.jpg'),
   ( '1234567894', 'Dr. Sandeep Ojha', 'Orthopedics', 'MD Pathology, PDCC (Cyto), DipRCPath (Histopath)', 'https://balcomedicalcentre.com/uploads/doctor/dr-sandeep-ojha.jpg'),
   ( '1234567895', 'Dr. Shishir Agrawal', 'Radiology', 'MBBS, DMRD, DNB', 'https://balcomedicalcentre.com/uploads/doctor/dr-shishir-agrawal.jpg'),
   ( '1234567898', 'Dr. Dibyendu De', 'Oncology', 'MD (General Medicine), DM (Clinical Haematology)', 'https://balcomedicalcentre.com/uploads/doctor/dr-dibyendu-de.jpg'),

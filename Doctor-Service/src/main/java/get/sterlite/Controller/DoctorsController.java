@@ -45,6 +45,10 @@ public class DoctorsController {
     public DoctorResponse getDoctorByID(@PathVariable("id") String id) {
         return doctorService.getDoctor(id);
     }
+    @GetMapping(value ="/doctors/search/{query}", produces = "application/json")
+    public List<Doctor>  getDoctorsBySearchQuery(@PathVariable("query") String query) {
+        return doctorService.getDoctorsBySearchQuery(query);
+    }
 
     @PutMapping(value ="/doctors/{id}",consumes = "application/json", produces = "application/json")
     public DoctorResponse updateDoctor(@PathVariable("id") String id, @RequestBody DoctorRequest doctorRequest) throws InvalidInputsException {

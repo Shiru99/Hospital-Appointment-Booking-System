@@ -44,6 +44,7 @@ Reference Website : https://balcomedicalcentre.com/
     * POST /signup
     * GET /doctors
     * GET /doctors/{id}
+    * GET /doctors/search/{query}
     * PUT /doctors/{id}
     * DELETE /doctors/{id}
 
@@ -81,7 +82,6 @@ Reference Website : https://balcomedicalcentre.com/
 
 ## TODO
 
-- [x] DoctorDetails
 - [ ] Appointments
-- [ ] Delete Patient/Doctor
+- [x] SearchByDoctorNameOrDepartment
 

@@ -1,7 +1,10 @@
 package get.sterlite.service;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.transaction.Transactional;
 
@@ -10,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import get.sterlite.Authentication.service.UserService;
 import get.sterlite.Exception.InvalidInputsException;
+import get.sterlite.model.Department;
 import get.sterlite.model.Doctor;
 import get.sterlite.model.DoctorDetails;
 import get.sterlite.model.DoctorRequest;
@@ -99,6 +103,31 @@ public class DoctorService {
         } else {
             return new DoctorResponse("No Doctor found with ID : " + id, null);
         }
+    }
+
+    public List<Doctor> getDoctorsBySearchQuery(String query) {
+
+        Set<Doctor> doctors=new HashSet<>(); 
+
+        doctors.addAll(findDoctorsByName(query));
+        doctors.addAll(findDoctorsByDepartment(query));
+
+        return new ArrayList<>(doctors);
+    }
+
+    private List<Doctor> findDoctorsByName(String query) {
+        return doctorRepository.findByFullNameContaining(query);
+    }
+
+    private List<Doctor> findDoctorsByDepartment(String query) {
+        List<Doctor> doctors=new ArrayList<>(); 
+
+        for (Department d : Department.values()) {
+            if(d.name().toLowerCase().contains(query.toLowerCase())) {
+                doctors.addAll(doctorRepository.findByDepartment(d));
+            }
+        }
+        return doctors;
     }
 
 }
