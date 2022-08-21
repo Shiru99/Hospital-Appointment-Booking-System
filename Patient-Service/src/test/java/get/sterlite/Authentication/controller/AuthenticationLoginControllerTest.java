@@ -1,6 +1,7 @@
 package get.sterlite.Authentication.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -14,12 +15,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.validation.BindingResult;
 
-import get.sterlite.Authentication.model.AuthenticationFailResponse;
 import get.sterlite.Authentication.model.AuthenticationResponse;
-import get.sterlite.Authentication.model.LoginRequest;
+import get.sterlite.Authentication.model.LoginUser;
 import get.sterlite.Authentication.service.UserService;
 import get.sterlite.Authentication.util.JwtUtil;
+import get.sterlite.Exception.InvalidInputsException;
+import get.sterlite.Exception.LoginException;
 import get.sterlite.service.PatientService;
 
 @TestInstance(Lifecycle.PER_CLASS)
@@ -28,6 +31,7 @@ public class AuthenticationLoginControllerTest {
     private AuthenticationController authenticationController;
     private UserService userService;
     private PatientService patientService;
+    private BindingResult errors;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -38,78 +42,94 @@ public class AuthenticationLoginControllerTest {
     void setup() {
         userService = mock(UserService.class);
         patientService = mock(PatientService.class);
+        errors = mock(BindingResult.class);
        
         authenticationController = new AuthenticationController();
         authenticationController.userService = userService;
         authenticationController.patientService = patientService;
         authenticationController.passwordEncoder = passwordEncoder();
         authenticationController.jwtTokenUtil = new JwtUtil();
+
+    }
+
+    @Test
+    @DisplayName("Create JWT token with invalid inputs for login")
+    void testCreateAuthenticationToken1() {
+
+        LoginUser loginUser = new LoginUser("1234567890", "");
+
+        when(errors.hasErrors()).thenReturn(true);
+
+        when(userService.getUserPassword(loginUser.getMobileNum())).thenReturn("$2a$10$oCRuhNF0fDycAy9TdbdtOeZ8QcnH4JdkdH.8Hty.iDZNg0hBNNttS");
+
+        assertThrows(InvalidInputsException.class, () -> authenticationController.loginAndCreateAuthenticationToken(loginUser, errors));
+
     }
 
     @Test
     @DisplayName("Create JWT token with non-existing user login")
-    void testCreateAuthenticationToken1() {
+    void testCreateAuthenticationToken2() throws Exception {
 
-        LoginRequest loginRequest = new LoginRequest("1234567800", "1234");
+        LoginUser loginUser = new LoginUser("1234567800", "1234");
 
-        when(userService.getUserPassword(loginRequest.getMobileNum())).thenThrow(new UsernameNotFoundException("User not found with mobileNum: " + loginRequest.getMobileNum()));
+        when(errors.hasErrors()).thenReturn(false);
 
-        ResponseEntity<?> response =  authenticationController.loginAndCreateAuthenticationToken(loginRequest);
+        when(userService.getUserPassword(loginUser.getMobileNum())).thenThrow(new UsernameNotFoundException("User not found with mobileNum: " + loginUser.getMobileNum()));
 
-        assertEquals(401, response.getStatusCodeValue());
-        
-        AuthenticationFailResponse authenticationFailResponse = (AuthenticationFailResponse) response.getBody();
+        Exception thrown =  assertThrows(UsernameNotFoundException.class, () -> authenticationController.loginAndCreateAuthenticationToken(loginUser, errors));
 
-        assertEquals("User not found with mobileNum: " + loginRequest.getMobileNum(), authenticationFailResponse.getMessage());
+        assertEquals("User not found with mobileNum: " + loginUser.getMobileNum(), thrown.getMessage());
+    
     }
 
     @Test
     @DisplayName("Create JWT token with invalid credentials login")
-    void testCreateAuthenticationToken2() {
+    void testCreateAuthenticationToken3() {
 
-        LoginRequest loginRequest = new LoginRequest("1234567890", "1235");
+        LoginUser loginUser = new LoginUser("1234567890", "1235");
 
-        when(userService.getUserPassword(loginRequest.getMobileNum())).thenReturn("$2a$10$oCRuhNF0fDycAy9TdbdtOeZ8QcnH4JdkdH.8Hty.iDZNg0hBNNttS");
+        when(errors.hasErrors()).thenReturn(false);
 
-        ResponseEntity<?> response =  authenticationController.loginAndCreateAuthenticationToken(loginRequest);
+        when(userService.getUserPassword(loginUser.getMobileNum())).thenReturn("$2a$10$oCRuhNF0fDycAy9TdbdtOeZ8QcnH4JdkdH.8Hty.iDZNg0hBNNttS");
 
-        assertEquals(401, response.getStatusCodeValue());
-        
-        AuthenticationFailResponse authenticationFailResponse = (AuthenticationFailResponse) response.getBody();
+        Exception thrown = assertThrows(LoginException.class, () -> authenticationController.loginAndCreateAuthenticationToken(loginUser, errors));
 
-        assertEquals("Invalid Credentials", authenticationFailResponse.getMessage());
+        assertEquals("Invalid Credentials", thrown.getMessage());
+
     }
 
+
     @Test
-    @DisplayName("Create JWT token with invalid credentials login")
-    void testCreateAuthenticationToken3() throws Exception {
+    @DisplayName("Create JWT token with invalid user login")
+    void testCreateAuthenticationToken4() throws Exception {
 
-        LoginRequest loginRequest = new LoginRequest("1234567890", "1234");
+        LoginUser loginUser = new LoginUser("1234567899", "1234");
 
-        when(userService.getUserPassword(loginRequest.getMobileNum())).thenReturn("$2a$10$oCRuhNF0fDycAy9TdbdtOeZ8QcnH4JdkdH.8Hty.iDZNg0hBNNttS");
+        when(userService.getUserPassword(loginUser.getMobileNum())).thenReturn("$2a$10$oCRuhNF0fDycAy9TdbdtOeZ8QcnH4JdkdH.8Hty.iDZNg0hBNNttS");
 
-        when(patientService.isPatientExist(loginRequest.getMobileNum())).thenReturn(false);
+        when(errors.hasErrors()).thenReturn(false);
 
-        ResponseEntity<?> response =  authenticationController.loginAndCreateAuthenticationToken(loginRequest);
+        when(patientService.isPatientExist(loginUser.getMobileNum())).thenReturn(false);
 
-        assertEquals(401, response.getStatusCodeValue());
-        
-        AuthenticationFailResponse authenticationFailResponse = (AuthenticationFailResponse) response.getBody();
+        Exception thrown = assertThrows(LoginException.class, () -> authenticationController.loginAndCreateAuthenticationToken(loginUser, errors));
 
-        assertEquals("Doctor can't login as `Patient`", authenticationFailResponse.getMessage());
+        assertEquals("Doctor can't login as `Patient`", thrown.getMessage());
+
     }
 
     @Test
     @DisplayName("Create JWT token with valid credentials login")
-    void testCreateAuthenticationToken4() throws Exception {
+    void testCreateAuthenticationToken5() throws Exception {
 
-        LoginRequest loginRequest = new LoginRequest("1234567890", "1234");
+        LoginUser loginUser = new LoginUser("1234567890", "1234");
 
-        when(userService.getUserPassword(loginRequest.getMobileNum())).thenReturn("$2a$10$oCRuhNF0fDycAy9TdbdtOeZ8QcnH4JdkdH.8Hty.iDZNg0hBNNttS");
+        when(errors.hasErrors()).thenReturn(false);
 
-        when(patientService.isPatientExist(loginRequest.getMobileNum())).thenReturn(true);
+        when(userService.getUserPassword(loginUser.getMobileNum())).thenReturn("$2a$10$oCRuhNF0fDycAy9TdbdtOeZ8QcnH4JdkdH.8Hty.iDZNg0hBNNttS");
 
-        ResponseEntity<?> response =  authenticationController.loginAndCreateAuthenticationToken(loginRequest);
+        when(patientService.isPatientExist(loginUser.getMobileNum())).thenReturn(true);
+
+        ResponseEntity<?> response =  authenticationController.loginAndCreateAuthenticationToken(loginUser, errors);
 
         assertEquals(200, response.getStatusCodeValue());
         

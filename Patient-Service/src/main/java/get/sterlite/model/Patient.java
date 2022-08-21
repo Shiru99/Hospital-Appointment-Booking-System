@@ -13,18 +13,18 @@ import javax.validation.constraints.Size;
 @Table(name = "Patients")
 public class Patient {
 
-    @Id
-    @NotNull
+    @Id 
+    @NotNull(message = "Mobile number is required")
     @Size(min = 10, max = 10, message = "Mobile no. must be 10 digits")
     @Column(name = "patient_id", unique = true, length = 10)
     private String mobileNum;
 
     @Transient
-    @NotNull
+    @NotNull(message = "Password is required")
     @Size(min = 1, message = "Password cannot be empty")
     private String password="****";
 
-    @NotNull
+    @NotNull(message = "Name cannot be empty")
     @Size(min = 1, max = 255, message = "fullName must be 1-255 characters long")
     @Column(name = "full_name")
     private String fullName;
