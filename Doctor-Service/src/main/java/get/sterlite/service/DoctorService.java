@@ -8,6 +8,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import get.sterlite.Authentication.service.UserService;
 import get.sterlite.Exception.InvalidInputsException;
 import get.sterlite.model.Doctor;
 import get.sterlite.model.DoctorDetails;
@@ -21,6 +22,9 @@ public class DoctorService {
 
     @Autowired
     DoctorRepository doctorRepository;
+
+    @Autowired
+    UserService userService;
 
     @Autowired
     DoctorDetailsService doctorDetailsService;
@@ -86,7 +90,9 @@ public class DoctorService {
     public DoctorResponse deleteDoctor(String id) {
         Optional<Doctor> doctor = doctorRepository.findByMobileNum(id);
         if (doctor.isPresent()) {
-            doctorRepository.deleteById(id);
+
+            userService.deleteUser(id);
+
             DoctorDetails doctorDetails = doctorDetailsService.getDoctorDetails(id);
 
             return new DoctorResponse("success", doctor.get(), doctorDetails);
