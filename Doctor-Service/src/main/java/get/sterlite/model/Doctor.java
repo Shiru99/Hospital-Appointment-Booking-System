@@ -45,6 +45,9 @@ public class Doctor {
     @Column(name = "profile_URL")
     private String profileURL;
 
+    @Transient
+    private DoctorDetails doctorDetails;
+
     public Doctor() {
     }
 

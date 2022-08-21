@@ -1,12 +1,28 @@
 package get.sterlite.model;
 
 public class DoctorResponse {
-    private String status;
-    private Doctor Doctor;
+    private String status="NA";
+    public Doctor doctor;
+    public DoctorDetails doctorDetails;
 
-    public DoctorResponse(String status, Doctor Doctor) {
+    public DoctorResponse(){
+        
+    }
+
+    public DoctorResponse(String status, Doctor doctor) {
         this.status = status;
-        this.Doctor = Doctor;
+        this.doctor = doctor;
+    }
+
+    public DoctorResponse( Doctor doctor, DoctorDetails doctorDetails) {
+        this.doctor = doctor;
+        this.doctorDetails = doctorDetails;
+    }
+
+    public DoctorResponse(String status, Doctor doctor, DoctorDetails doctorDetails) {
+        this.status = status;
+        this.doctor = doctor;
+        this.doctorDetails = doctorDetails;
     }
 
     public String getStatus() {
@@ -16,9 +32,17 @@ public class DoctorResponse {
         this.status = status;
     }
     public Doctor getDoctor() {
-        return Doctor;
+        return doctor;
     }
-    public void setDoctor(Doctor Doctor) {
-        this.Doctor = Doctor;
+    public void setDoctor(Doctor doctor) {
+        this.doctor = doctor;
+    }
+
+    public DoctorDetails getDoctorDetails() {
+        return doctorDetails;
+    }
+
+    public void setDoctorDetails(DoctorDetails doctorDetails) {
+        this.doctorDetails = doctorDetails;
     }
 }

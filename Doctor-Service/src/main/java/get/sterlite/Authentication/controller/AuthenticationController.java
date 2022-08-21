@@ -20,7 +20,7 @@ import get.sterlite.Authentication.service.UserService;
 import get.sterlite.Authentication.util.JwtUtil;
 import get.sterlite.Exception.InvalidInputsException;
 import get.sterlite.Exception.LoginException;
-import get.sterlite.model.Doctor;
+import get.sterlite.model.DoctorRequest;
 import get.sterlite.service.DoctorService;
 
 @RestController
@@ -61,20 +61,20 @@ class AuthenticationController {
 	@Transactional
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
 	public ResponseEntity<?> signupAndCreateAuthenticationToken(
-			@RequestBody @Validated  Doctor doctor, BindingResult errors
+			@RequestBody @Validated  DoctorRequest doctorRequest, BindingResult errors
 			 ) throws Exception {
-
-		System.out.println("doctor : " + doctor);
 
 		if (errors.hasErrors()) {
 			throw new InvalidInputsException(errors);
 		}
 
 		try {
-			userService.saveUser(doctor);
-			doctorService.saveDoctor(doctor);
+			if(doctorRequest.getDoctor()==null)
+				throw new InvalidInputsException("Doctor is null");
+			userService.saveUser(doctorRequest.getDoctor());
+			doctorService.saveDoctor(doctorRequest.getDoctor());
 			final String jwt = jwtTokenUtil
-					.generateToken(doctor.getMobileNum());
+					.generateToken(doctorRequest.getDoctor().getMobileNum());
 			return ResponseEntity.ok(new AuthenticationResponse(jwt));
 
 		} catch (Exception e) {
