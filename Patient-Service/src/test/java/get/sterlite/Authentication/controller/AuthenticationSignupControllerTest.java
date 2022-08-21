@@ -23,6 +23,7 @@ import get.sterlite.Authentication.service.UserService;
 import get.sterlite.Authentication.util.JwtUtil;
 import get.sterlite.Exception.InvalidInputsException;
 import get.sterlite.model.Patient;
+import get.sterlite.model.PatientRequest;
 import get.sterlite.service.PatientService;
 
 @TestInstance(Lifecycle.PER_CLASS)
@@ -57,9 +58,12 @@ public class AuthenticationSignupControllerTest {
 
         Patient patient = new Patient("1234567888", "", "1234");
 
+        PatientRequest patientRequest = new PatientRequest();
+        patientRequest.setPatient(patient);
+
         when(errors.hasErrors()).thenReturn(true);
 
-        assertThrows(InvalidInputsException.class, () -> authenticationController.signupAndCreateAuthenticationToken(patient, errors));
+        assertThrows(InvalidInputsException.class, () -> authenticationController.signupAndCreateAuthenticationToken(patientRequest, errors));
     }
 
     @Test
@@ -68,12 +72,15 @@ public class AuthenticationSignupControllerTest {
 
         Patient patient = new Patient("1234567890", "blah blah", "1234");
 
+        PatientRequest patientRequest = new PatientRequest();
+        patientRequest.setPatient(patient);
+
         when(errors.hasErrors()).thenReturn(false);
 
         Mockito.doThrow(new RuntimeException("User already exist with mobileNum: " + patient.getMobileNum())).when(userService).saveUser(patient);
 
 
-        ResponseEntity<?> response =  authenticationController.signupAndCreateAuthenticationToken(patient, errors);
+        ResponseEntity<?> response =  authenticationController.signupAndCreateAuthenticationToken(patientRequest, errors);
 
         assertEquals(401, response.getStatusCodeValue());
         
@@ -88,13 +95,16 @@ public class AuthenticationSignupControllerTest {
 
         Patient patient = new Patient("1234567800", "1234", "blah blah");
 
+        PatientRequest patientRequest = new PatientRequest();
+        patientRequest.setPatient(patient);
+
         when(errors.hasErrors()).thenReturn(false);
         
         Mockito.doNothing().when(userService).saveUser(patient);
 
         Mockito.doNothing().when(patientService).savePatient(patient);
 
-        ResponseEntity<?> response =  authenticationController.signupAndCreateAuthenticationToken(patient,errors);
+        ResponseEntity<?> response =  authenticationController.signupAndCreateAuthenticationToken(patientRequest,errors);
 
         assertEquals(200, response.getStatusCodeValue());
         

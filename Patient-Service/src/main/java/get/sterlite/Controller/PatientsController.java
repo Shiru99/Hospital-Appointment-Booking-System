@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import get.sterlite.Exception.InvalidInputsException;
 import get.sterlite.model.Patient;
+import get.sterlite.model.PatientRequest;
 import get.sterlite.model.PatientResponse;
 import get.sterlite.service.PatientService;
 
@@ -45,8 +47,8 @@ public class PatientsController {
     }
 
     @PutMapping(value ="/patients/{id}",consumes = "application/json", produces = "application/json")
-    public PatientResponse updatePatient(@PathVariable("id") String id, @RequestBody Patient patient) {
-        return patientService.updatePatientDetails(id, patient);
+    public PatientResponse updatePatient(@PathVariable("id") String id, @RequestBody PatientRequest patientRequest) throws InvalidInputsException {
+        return patientService.updatePatientDetails(id, patientRequest);
     }
 
     @DeleteMapping("/patients/{id}")

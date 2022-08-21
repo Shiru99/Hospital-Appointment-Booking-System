@@ -40,4 +40,9 @@ public class UserService {
             throw new RuntimeException("User already exist with mobileNum: " + patient.getMobileNum());
         }
     }
+
+    public void deleteUser(String id) {
+        LoginUser loginUser = loginUserRepository.findByMobileNum(id).get();
+        loginUserRepository.delete(loginUser);
+    }
 }

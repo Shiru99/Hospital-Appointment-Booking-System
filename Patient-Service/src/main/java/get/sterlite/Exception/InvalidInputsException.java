@@ -4,6 +4,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 
 public class InvalidInputsException extends Exception {
+
+    public InvalidInputsException(String message) {
+        super(message);
+    }
+    
     public InvalidInputsException(BindingResult errors) {
         super(getErrorString(errors));
     }

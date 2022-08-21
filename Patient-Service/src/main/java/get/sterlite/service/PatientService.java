@@ -6,7 +6,10 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import get.sterlite.Authentication.service.UserService;
+import get.sterlite.Exception.InvalidInputsException;
 import get.sterlite.model.Patient;
+import get.sterlite.model.PatientRequest;
 import get.sterlite.model.PatientResponse;
 import get.sterlite.repository.PatientRepository;
 
@@ -15,6 +18,9 @@ public class PatientService {
 
     @Autowired
     PatientRepository patientRepository;
+
+    @Autowired
+    UserService userService;
 
     public void savePatient(Patient patient) {
 
@@ -45,20 +51,23 @@ public class PatientService {
 
     }
 
-    public PatientResponse updatePatientDetails(String mobileNum, Patient patient) {
+    public PatientResponse updatePatientDetails(String mobileNum, PatientRequest patientRequest) throws InvalidInputsException {
         if (!isPatientExist(mobileNum)) {
             return new PatientResponse("No patient found with Mobile Number : " + mobileNum, null);
         } else {
-            patient.setMobileNum(mobileNum);
-            patientRepository.save(patient);
-            return new PatientResponse("success", patient);
+            if (!mobileNum.equals(patientRequest.getPatient().getMobileNum())) {
+                throw new InvalidInputsException("Incorrect mobile no. for Patient ID : " + mobileNum);
+            }
+
+            patientRepository.save(patientRequest.getPatient());
+            return new PatientResponse("success", patientRequest.getPatient());
         }
     }
 
     public PatientResponse deletePatient(String id) {
         Optional<Patient> patient = patientRepository.findByMobileNum(id);
         if (patient.isPresent()) {
-            patientRepository.deleteById(id);
+            userService.deleteUser(id);
             return new PatientResponse("success", patient.get());
         } else {
             return new PatientResponse("No patient found with ID : " + id, null);
