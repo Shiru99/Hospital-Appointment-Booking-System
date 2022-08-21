@@ -82,6 +82,8 @@ Reference Website : https://balcomedicalcentre.com/
 
 ## TODO
 
-- [ ] Appointments
+- [X] Appointments
+- [ ] Appointments SS
+- [ ] getAppointmentsByDifferentQuery
 - [x] SearchByDoctorNameOrDepartment
 
