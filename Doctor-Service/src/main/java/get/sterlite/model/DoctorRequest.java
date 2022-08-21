@@ -1,7 +1,16 @@
 package get.sterlite.model;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 public class DoctorRequest {
+    
+    @Valid
+    @NotNull(message = "Doctor cannot be null")
     public Doctor doctor;
+
+    @Valid
+    @NotNull(message = "Doctor Details Name cannot be null")
     public DoctorDetails doctorDetails;
 
     public DoctorRequest(){

@@ -25,6 +25,7 @@ import get.sterlite.Exception.InvalidInputsException;
 import get.sterlite.model.Department;
 import get.sterlite.model.Doctor;
 import get.sterlite.model.DoctorRequest;
+import get.sterlite.model.DoctorSignupRequest;
 import get.sterlite.service.DoctorService;
 
 @TestInstance(Lifecycle.PER_CLASS)
@@ -60,7 +61,7 @@ public class AuthenticationSignupControllerTest {
 
         Doctor doctor = new Doctor("1234567889", "1234", "Dr. x", Department.Radiology, "I.T.U.S.", "");
 
-        DoctorRequest doctorRequest = new DoctorRequest();
+        DoctorSignupRequest doctorRequest = new DoctorSignupRequest();
         doctorRequest.setDoctor(doctor);
         
 
@@ -76,7 +77,7 @@ public class AuthenticationSignupControllerTest {
 
         Doctor doctor = new Doctor("1234567899", "1234", "Dr. x", Department.Radiology, "I.T.U.S.", "google.com");
 
-        DoctorRequest doctorRequest = new DoctorRequest();
+        DoctorSignupRequest doctorRequest = new DoctorSignupRequest();
         doctorRequest.setDoctor(doctor);
 
         when(errors.hasErrors()).thenReturn(false);
@@ -99,7 +100,7 @@ public class AuthenticationSignupControllerTest {
 
         Doctor doctor = new Doctor("1234567888", "1234", "Dr. x", Department.Radiology, "I.T.U.S.", "google.com");
 
-        DoctorRequest doctorRequest = new DoctorRequest();
+        DoctorSignupRequest doctorRequest = new DoctorSignupRequest();
         doctorRequest.setDoctor(doctor);
 
         when(errors.hasErrors()).thenReturn(false);

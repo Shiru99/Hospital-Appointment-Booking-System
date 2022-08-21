@@ -20,7 +20,7 @@ import get.sterlite.Authentication.service.UserService;
 import get.sterlite.Authentication.util.JwtUtil;
 import get.sterlite.Exception.InvalidInputsException;
 import get.sterlite.Exception.LoginException;
-import get.sterlite.model.DoctorRequest;
+import get.sterlite.model.DoctorSignupRequest;
 import get.sterlite.service.DoctorService;
 
 @RestController
@@ -61,7 +61,7 @@ class AuthenticationController {
 	@Transactional
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
 	public ResponseEntity<?> signupAndCreateAuthenticationToken(
-			@RequestBody @Validated  DoctorRequest doctorRequest, BindingResult errors
+			@RequestBody @Validated  DoctorSignupRequest doctorRequest, BindingResult errors
 			 ) throws Exception {
 
 		if (errors.hasErrors()) {
