@@ -18,19 +18,22 @@ public class JwtUtil {
 
     private String SECRET_KEY = "get.sterlite.shiru99";
 
-    public String extractUsername(String token) throws Exception {
+    public String extractUsername(String token) throws MalformedJwtException, ExpiredJwtException {
         try {
             return extractClaim(token, Claims::getSubject);
-        } catch (Exception e) {
-            throw new Exception("Expired or invalid JWT token");
+        } catch (MalformedJwtException e) {
+            throw new MalformedJwtException("Invalid JWT token");
+        } catch (ExpiredJwtException e) {
+            throw new ExpiredJwtException(null, null, "Expired JWT token");
         }
     }
 
-    public Date extractExpiration(String token) throws Exception {
+    public Date extractExpiration(String token) throws MalformedJwtException, ExpiredJwtException {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) throws Exception {
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver)
+            throws MalformedJwtException, ExpiredJwtException {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
@@ -41,11 +44,11 @@ public class JwtUtil {
         } catch (MalformedJwtException e) {
             throw new MalformedJwtException("Invalid JWT token");
         } catch (ExpiredJwtException e) {
-            throw new MalformedJwtException("Expired JWT token");
+            throw new ExpiredJwtException(null, null, "Expired JWT token");
         }
     }
 
-    private Boolean isTokenExpired(String token) throws Exception {
+    private Boolean isTokenExpired(String token) throws MalformedJwtException, ExpiredJwtException {
         return extractExpiration(token).before(new Date());
     }
 
@@ -63,7 +66,7 @@ public class JwtUtil {
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY).compact();
     }
 
-    public Boolean validateToken(String JWTToken) throws Exception {
+    public Boolean validateToken(String JWTToken) throws MalformedJwtException, ExpiredJwtException {
         return !isTokenExpired(JWTToken);
     }
 }

@@ -28,8 +28,6 @@ public class SecurityConfig {
 
 		httpSecurity.csrf().disable()
 				.authorizeRequests()
-                .antMatchers("/login").permitAll()
-                .antMatchers("/signup").permitAll()
 				.anyRequest().authenticated().and()
 				.exceptionHandling()
                 .and().sessionManagement()

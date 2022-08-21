@@ -28,14 +28,20 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
 
+        System.out.println("JwtRequestFilter.doFilterInternal()");
+
         final String authorizationHeader = request.getHeader("Authorization");
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
 
             String jwt = authorizationHeader.substring(7);
 
+            System.out.println("jwt: " + jwt);
+
             try {
                 if (jwtUtil.validateToken(jwt)) {
+
+                    System.out.println("jwt is valid");
 
                     UsernamePasswordAuthenticationToken UPAuthenticationToken = new UsernamePasswordAuthenticationToken(
                             null,
