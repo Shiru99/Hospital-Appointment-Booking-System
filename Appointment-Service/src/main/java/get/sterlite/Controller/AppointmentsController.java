@@ -49,6 +49,16 @@ class AppointmentsController {
         return appointmentService.getAppointment(id);
     }
 
+    @GetMapping(value ="/appointments/patients/{patientId}", produces = "application/json")
+    public List<Appointment> getAppointmentsByPatient(@PathVariable("patientId") String patientId) {
+        return appointmentService.getAppointmentsByPatient(patientId);
+    }
+
+    @GetMapping(value ="/appointments/doctors/{doctorId}", produces = "application/json")
+    public List<Appointment> getAppointmentsByDoctor(@PathVariable("doctorId") String doctorId) {
+        return appointmentService.getAppointmentsByDoctor(doctorId);
+    }
+
     @PostMapping(value ="/appointments", produces = "application/json")
     public AppointmentResponse addAppointment(@RequestBody @Valid AppointmentRequest appointmentRequest, BindingResult errors) throws InvalidInputsException{
         if (errors.hasErrors()) {
@@ -57,12 +67,12 @@ class AppointmentsController {
         return appointmentService.addAppointment(appointmentRequest);
     }
 
-    @PutMapping(value ="/appointments/{id}", produces = "application/json")
-    public AppointmentResponse updateAppointment(@PathVariable("id") int id, @RequestBody @Valid AppointmentRequest appointmentRequest, BindingResult errors) throws InvalidInputsException{
+    @PutMapping(value ="/appointments/{Id}", produces = "application/json")
+    public AppointmentResponse updateAppointment(@PathVariable("Id") int Id, @RequestBody @Valid AppointmentRequest appointmentRequest, BindingResult errors) throws InvalidInputsException{
         if (errors.hasErrors()) {
             throw new InvalidInputsException(errors);
         }
-        return appointmentService.updateAppointment(id, appointmentRequest.getAppointment());
+        return appointmentService.updateAppointment(Id, appointmentRequest);
     }
 
     @DeleteMapping(value ="/appointments/{id}", produces = "application/json")

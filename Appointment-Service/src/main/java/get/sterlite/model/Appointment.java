@@ -21,10 +21,10 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Table(name = "Appointments")
 public class Appointment {
 
-    @Id()
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private int id;
+    @Column(name = "appointment_id")
+    private int appointmentId;
 
     @NotNull(message = "doctor_id cannot be null")
     @Size(min = 10, max = 10, message = "doctor_id must be 10 digits")
@@ -70,12 +70,12 @@ public class Appointment {
         this.message = message;
     }
 
-    public int getId() {
-        return id;
+    public int getAppointmentId() {
+        return appointmentId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setAppointmentId(int appointmentId) {
+        this.appointmentId = appointmentId;
     }
 
     public String getDoctorId() {
@@ -128,7 +128,9 @@ public class Appointment {
 
     @Override
     public String toString() {
-        return "Appointment [appointmentDate=" + appointmentDate + ", doctorId=" + doctorId + ", id=" + id  + ", message=" + message + ", patientId=" + patientId + ", slot=" + slot + ", status=" + status + "]";
+        return "Appointment [appointmentId=" + appointmentId + ", doctorId=" + doctorId + ", patientId=" + patientId
+                + ", appointmentDate=" + appointmentDate + ", slot=" + slot + ", status=" + status + ", message=" + message
+                + "]";
     }
 
 }

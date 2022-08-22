@@ -4,16 +4,15 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import get.sterlite.Exception.InvalidInputsException;
 import get.sterlite.model.Appointment;
 import get.sterlite.model.AppointmentRequest;
 import get.sterlite.model.AppointmentResponse;
 import get.sterlite.repository.AppointmentRepository;
-
 
 @Transactional
 @Service("AppointmentService")
@@ -44,21 +43,55 @@ public class AppointmentService {
 
     }
 
-    public AppointmentResponse addAppointment(AppointmentRequest appointmentRequest) {
-        appointmentRepository.save(appointmentRequest.getAppointment());
-        return new AppointmentResponse("success", appointmentRequest.getAppointment());
+    public List<Appointment> getAppointmentsByPatient(String patientId) {
+        return appointmentRepository.findByPatientId(patientId);
     }
 
-    public AppointmentResponse updateAppointment(int id, Appointment appointment) {
+    public List<Appointment> getAppointmentsByDoctor(String doctorId) {
+        return appointmentRepository.findByDoctorId(doctorId);
+    }
 
-        Optional<Appointment> oldAppointment = appointmentRepository.findById(id);
-        if (oldAppointment.isPresent()) {
-            appointmentRepository.delete(oldAppointment.get());
-            appointmentRepository.save(appointment);
-            return new AppointmentResponse("success", appointment);
-        } else{
-            return new AppointmentResponse("No appointment found with ID : " + id, null);
+    public AppointmentResponse isValidAppointment(AppointmentRequest appointmentRequest) {
+        Appointment appointment = appointmentRequest.getAppointment();
+
+        Optional<Appointment> existingAppointment;
+
+        existingAppointment = appointmentRepository.findByDoctorIdAndPatientIdAndAppointmentDate(appointment.getDoctorId(), appointment.getPatientId(), appointment.getAppointmentDate());
+
+        if (existingAppointment.isPresent()) {
+            return new AppointmentResponse(
+                    "Appointment already exists for doctor with ID : " + appointment.getDoctorId() + " and patient with ID : " + appointment.getPatientId() + " on " + appointment.getAppointmentDate() + " at " + existingAppointment.get().getSlot(), null);
+        } 
+
+        existingAppointment = appointmentRepository.findByDoctorIdAndAppointmentDateAndSlot(
+            appointment.getDoctorId(), appointment.getAppointmentDate(), appointment.getSlot());
+
+        if (existingAppointment.isPresent()) {
+            return new AppointmentResponse(
+                    "Appointment already exists for doctor with ID : " + appointment.getDoctorId() + " on "
+                            + appointment.getAppointmentDate() + " at " + appointment.getSlot(),
+                    null);
         }
+        existingAppointment = appointmentRepository.findByPatientIdAndAppointmentDateAndSlot(appointment.getPatientId(),
+                appointment.getAppointmentDate(), appointment.getSlot());
+        if (existingAppointment.isPresent()) {
+            return new AppointmentResponse(
+                    "Appointment already exists for patient with ID : " + appointment.getPatientId() + " on "
+                            + appointment.getAppointmentDate() + " at " + appointment.getSlot(),
+                    null);
+        }
+        return null;
+    }
+    
+    public AppointmentResponse addAppointment(AppointmentRequest appointmentRequest) {
+        AppointmentResponse appointmentResponse = isValidAppointment(appointmentRequest);
+
+        if (appointmentResponse != null) {
+            return appointmentResponse;
+        }
+
+        appointmentRepository.save(appointmentRequest.getAppointment());
+        return new AppointmentResponse("success", appointmentRequest.getAppointment());
     }
 
     public AppointmentResponse deleteAppointment(int id) {
@@ -69,4 +102,34 @@ public class AppointmentService {
         } else
             return new AppointmentResponse("No appointment found with ID : " + id, null);
     }
+
+    public AppointmentResponse updateAppointment(int id, @Valid AppointmentRequest appointmentRequest) {
+
+        AppointmentResponse appointmentResponse = isValidAppointment(appointmentRequest);
+
+        if (appointmentResponse != null) {
+            return appointmentResponse;
+        }
+
+        Optional<Appointment> oldAppointmentOptional = appointmentRepository.findById(id);
+
+        if (oldAppointmentOptional.isPresent()) {
+            Appointment oldAppointment = oldAppointmentOptional.get();
+
+            oldAppointment.setAppointmentDate(appointmentRequest.getAppointment().getAppointmentDate());
+            oldAppointment.setSlot(appointmentRequest.getAppointment().getSlot());
+            oldAppointment.setDoctorId(appointmentRequest.getAppointment().getDoctorId());
+            oldAppointment.setPatientId(appointmentRequest.getAppointment().getPatientId());
+            oldAppointment.setStatus(appointmentRequest.getAppointment().getStatus());
+            oldAppointment.setMessage(appointmentRequest.getAppointment().getMessage());
+            oldAppointment.setStatus(appointmentRequest.getAppointment().getStatus());
+
+            appointmentRepository.save(oldAppointment);
+
+            return new AppointmentResponse("success", oldAppointment);
+        } else {
+            return new AppointmentResponse("No appointment found with ID : " + id, null);
+        }
+    }
+    
 }
