@@ -24,7 +24,6 @@ import get.sterlite.Authentication.util.JwtUtil;
 import get.sterlite.Exception.InvalidInputsException;
 import get.sterlite.model.Department;
 import get.sterlite.model.Doctor;
-import get.sterlite.model.DoctorRequest;
 import get.sterlite.model.DoctorSignupRequest;
 import get.sterlite.service.DoctorService;
 

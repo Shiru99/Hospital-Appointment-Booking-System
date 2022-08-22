@@ -53,6 +53,8 @@ Reference Website : https://balcomedicalcentre.com/
     * POST /appointments
     * GET /appointments
     * GET /appointments/{id}
+    * GET /appointments/patients/{patientId}
+    * GET /appointments/doctors/{doctorId}
     * PUT /appointments/{id}
     * DELETE /appointments/{id}
 
@@ -83,7 +85,7 @@ Reference Website : https://balcomedicalcentre.com/
 ## TODO
 
 - [X] Appointments
-- [ ] Appointments SS
-- [ ] getAppointmentsByDifferentQuery
-- [x] SearchByDoctorNameOrDepartment
+- [X] Appointments SS
+- [ ] getAppointmentsByDifferentQueries
+- [X] SearchByDoctorNameOrDepartment
 

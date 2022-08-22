@@ -28,13 +28,15 @@ CREATE TABLE `DoctorDetails` (
 );
 
 CREATE TABLE `Appointments` (
-  `id` int PRIMARY KEY AUTO_INCREMENT,
+  `appointment_id` int PRIMARY KEY AUTO_INCREMENT,
   `doctor_id` varchar(10),
   `patient_id` varchar(10),
   `date` date,
   `slot` ENUM ('UNKNOWN', 'Morning1', 'Morning2', 'Morning3', 'Afternoon1', 'Afternoon2', 'Afternoon3', 'Evening1', 'Evening2', 'Evening3'),
   `status` ENUM ('UNKNOWN', 'Done', 'Active', 'Cancelled'),
-  `message` varchar(1000)
+  `message` varchar(1000),
+  UNIQUE KEY `my_uniq_id_1` (`doctor_id`,`date`, `slot`),
+  UNIQUE KEY `my_uniq_id_2` (`patient_id`,`date`, `slot`)
 );
 
 ALTER TABLE `Patients` ADD FOREIGN KEY (`patient_id`) REFERENCES `Users` (`mobile_num`) ON DELETE CASCADE;
