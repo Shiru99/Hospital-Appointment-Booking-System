@@ -58,7 +58,7 @@ public class AuthenticationSignupControllerTest {
     @DisplayName("Create JWT token with invalid signup details")
     void testCreateAuthenticationToken1() throws Exception {
 
-        Doctor doctor = new Doctor("1234567889", "1234", "Dr. x", Department.Radiology, "I.T.U.S.", "");
+        Doctor doctor = new Doctor("1234567889", "1234", "Dr. x", Department.RADIOLOGY, "I.T.U.S.", "");
 
         DoctorSignupRequest doctorRequest = new DoctorSignupRequest();
         doctorRequest.setDoctor(doctor);
@@ -74,7 +74,7 @@ public class AuthenticationSignupControllerTest {
     @DisplayName("Create JWT token with existing user signup")
     void testCreateAuthenticationToken2() throws Exception {
 
-        Doctor doctor = new Doctor("1234567899", "1234", "Dr. x", Department.Radiology, "I.T.U.S.", "google.com");
+        Doctor doctor = new Doctor("1234567899", "1234", "Dr. x", Department.RADIOLOGY, "I.T.U.S.", "google.com");
 
         DoctorSignupRequest doctorRequest = new DoctorSignupRequest();
         doctorRequest.setDoctor(doctor);
@@ -97,7 +97,7 @@ public class AuthenticationSignupControllerTest {
     @DisplayName("Create JWT token with valid credentials")
     void testCreateAuthenticationToken4() throws Exception {
 
-        Doctor doctor = new Doctor("1234567888", "1234", "Dr. x", Department.Radiology, "I.T.U.S.", "google.com");
+        Doctor doctor = new Doctor("1234567888", "1234", "Dr. x", Department.RADIOLOGY, "I.T.U.S.", "google.com");
 
         DoctorSignupRequest doctorRequest = new DoctorSignupRequest();
         doctorRequest.setDoctor(doctor);

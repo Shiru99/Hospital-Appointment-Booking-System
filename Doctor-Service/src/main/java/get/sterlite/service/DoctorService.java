@@ -110,7 +110,7 @@ public class DoctorService {
         Set<Doctor> doctors=new HashSet<>(); 
 
         doctors.addAll(findDoctorsByName(query));
-        doctors.addAll(findDoctorsByDepartment(query));
+        doctors.addAll(findDoctorsByDepartmentName(query));
 
         return new ArrayList<>(doctors);
     }
@@ -119,7 +119,7 @@ public class DoctorService {
         return doctorRepository.findByFullNameContaining(query);
     }
 
-    private List<Doctor> findDoctorsByDepartment(String query) {
+    private List<Doctor> findDoctorsByDepartmentName(String query) {
         List<Doctor> doctors=new ArrayList<>(); 
 
         for (Department d : Department.values()) {

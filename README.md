@@ -53,10 +53,14 @@ Reference Website : https://balcomedicalcentre.com/
     * POST /appointments
     * GET /appointments
     * GET /appointments/{id}
-    * GET /appointments/patients/{patientId}
-    * GET /appointments/doctors/{doctorId}
     * PUT /appointments/{id}
     * DELETE /appointments/{id}
+    * GET /appointments/patients/{patientId}
+    * GET /appointments/doctors/{doctorId}
+    * GET /appointments/patients/{patientId}/{status}
+    * GET /appointments/doctors/{doctorId}/{status}
+    * GET /appointments/free-slots/{doctorId}/{date}
+
 
 ### Testing : JUnit & [Thunder Client](https://marketplace.visualstudio.com/items?itemName=rangav.vscode-thunder-client)
 
@@ -84,8 +88,6 @@ Reference Website : https://balcomedicalcentre.com/
 
 ## TODO
 
-- [X] Appointments
-- [X] Appointments SS
-- [ ] getAppointmentsByDifferentQueries
-- [X] SearchByDoctorNameOrDepartment
+- [X] getAppointmentsByDifferentQueries
+
 
