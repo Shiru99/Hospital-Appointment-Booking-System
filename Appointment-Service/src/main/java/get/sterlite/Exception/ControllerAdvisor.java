@@ -1,6 +1,5 @@
 package get.sterlite.Exception;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -8,15 +7,17 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.hibernate.exception.ConstraintViolationException;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.transaction.UnexpectedRollbackException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
@@ -26,13 +27,11 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleInvalidInputsException(
             InvalidInputsException ex, WebRequest request) {
 
-        System.out.println("InvalidInputsException");
+        HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
 
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("message", ex.getMessage());
+        Map<String, Object> body = getResponseBody(ex, request, httpStatus);
 
-        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(body, httpStatus);
     }
 
     @Override
@@ -40,9 +39,9 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
             MethodArgumentNotValidException ex, HttpHeaders headers,
             HttpStatus status, WebRequest request) {
 
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp", LocalDate.now());
-        body.put("status", status.value());
+        HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
+
+        Map<String, Object> body = getResponseBody(ex, request, httpStatus);
 
         List<String> errors = ex.getBindingResult()
                 .getFieldErrors()
@@ -52,29 +51,70 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
 
         body.put("errors", errors);
 
-        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(body, httpStatus);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleExceptionInternal(
+            Exception ex,
+            Object object,
+            HttpHeaders headers,
+            HttpStatus status,
+            WebRequest request) {
+
+        HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
+
+        Map<String, Object> body = getResponseBody(ex, request, httpStatus);
+
+        httpStatus = updateExceptionMessage(ex, httpStatus, body);
+
+        return new ResponseEntity<>(body, httpStatus);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleAllException(
             Exception ex, WebRequest request) {
 
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp", LocalDateTime.now());
+        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 
+        Map<String, Object> body = getResponseBody(ex, request, httpStatus);
+
+        httpStatus = updateExceptionMessage(ex, httpStatus, body);
+
+        return new ResponseEntity<>(body, httpStatus);
+    }
+
+    private HttpStatus updateExceptionMessage(Exception ex, HttpStatus httpStatus, Map<String, Object> body) {
         if (ex instanceof InvalidInputsException) {
             body.put("message", "Invalid Inputs");
+            httpStatus = HttpStatus.BAD_REQUEST;
         } else if (ex instanceof ConstraintViolationException) {
             body.put("message", "Constraint Violation");
+            httpStatus = HttpStatus.BAD_REQUEST;
         } else if (ex instanceof UnexpectedRollbackException) {
             body.put("message", "Unexpected Rollback");
-        } else if (ex instanceof DataIntegrityViolationException) {
+            httpStatus = HttpStatus.BAD_REQUEST;
+        } else if (ex instanceof ConversionFailedException || ex instanceof NumberFormatException
+                || ex instanceof IllegalArgumentException || ex instanceof HttpMessageNotReadableException
+                || ex instanceof MethodArgumentTypeMismatchException) {
             body.put("message", "Please Check the input values");
-            return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+            httpStatus = HttpStatus.BAD_REQUEST;
         } else {
             body.put("message", "Something Went Wrong");
         }
 
-        return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
+        return httpStatus;
+    }
+
+    private Map<String, Object> getResponseBody(Exception ex, WebRequest request, HttpStatus httpStatus) {
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("status code", httpStatus.value());
+        body.put("status", httpStatus);
+        body.put("reason", httpStatus.getReasonPhrase().toUpperCase());
+        body.put("path", request.getDescription(false));
+        body.put("message", ex.getMessage());
+
+        return body;
     }
 }

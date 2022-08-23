@@ -22,7 +22,10 @@ public interface AppointmentRepository extends CrudRepository<Appointment,Intege
     Optional<Appointment> findByDoctorIdAndAppointmentDateAndSlot(String doctorId, Date appointmentDate, Slot slot);
     Optional<Appointment> findByDoctorIdAndPatientIdAndAppointmentDate(String doctorId, String patientId, Date appointmentDate);
 
-    List<Appointment> findByDoctorIdAndPatientId(String doctorId, String patientId);
     List<Appointment> findByDoctorIdAndStatus(String doctorId, Status status);
+    List<Appointment> findByPatientIdAndStatus(String patientId, Status status);
+
     List<Appointment> findByDoctorIdAndAppointmentDate(String doctorId, Date date);
+    List<Appointment> findByStatusAndAppointmentDateLessThan(Status active, Date date);
+    List<Appointment> findByStatus(Status cancelled);
 }
