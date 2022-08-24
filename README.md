@@ -66,8 +66,8 @@ Reference Website : https://balcomedicalcentre.com/
 
 - [x] Login
 - [x] Patient
-- [ ] Doctor
-- [ ] Booking
+- [x] Doctor
+- [x] Booking
 - [ ] Payment
 
 ---
@@ -89,7 +89,8 @@ Reference Website : https://balcomedicalcentre.com/
 
 ## TODO
 
-- [X] getAppointmentsByDifferentQueries
+
 - [ ] Payment - appointment booking
+- [-] API gateway
 
 

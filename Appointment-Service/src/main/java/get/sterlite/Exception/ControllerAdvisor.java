@@ -12,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.UnexpectedRollbackException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -86,19 +87,26 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
 
     private HttpStatus updateExceptionMessage(Exception ex, HttpStatus httpStatus, Map<String, Object> body) {
         if (ex instanceof InvalidInputsException) {
+            httpStatus = HttpStatus.BAD_REQUEST;
+            updateResponseBody(body, ex, httpStatus);
             body.put("message", "Invalid Inputs");
-            httpStatus = HttpStatus.BAD_REQUEST;
         } else if (ex instanceof ConstraintViolationException) {
+            httpStatus = HttpStatus.BAD_REQUEST;
+            updateResponseBody(body, ex, httpStatus);
             body.put("message", "Constraint Violation");
-            httpStatus = HttpStatus.BAD_REQUEST;
         } else if (ex instanceof UnexpectedRollbackException) {
-            body.put("message", "Unexpected Rollback");
             httpStatus = HttpStatus.BAD_REQUEST;
+            updateResponseBody(body, ex, httpStatus);
+            body.put("message", "Unexpected Rollback");
         } else if (ex instanceof ConversionFailedException || ex instanceof NumberFormatException
                 || ex instanceof IllegalArgumentException || ex instanceof HttpMessageNotReadableException
                 || ex instanceof MethodArgumentTypeMismatchException) {
-            body.put("message", "Please Check the input values");
             httpStatus = HttpStatus.BAD_REQUEST;
+            updateResponseBody(body, ex, httpStatus);
+            body.put("message", "Please Check the input values");
+        } else if (ex instanceof UsernameNotFoundException) {
+            httpStatus = HttpStatus.UNAUTHORIZED;
+            updateResponseBody(body, ex, httpStatus);
         } else {
             body.put("message", "Something Went Wrong");
         }
@@ -116,5 +124,13 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
         body.put("message", ex.getMessage());
 
         return body;
+    }
+
+    private void updateResponseBody(Map<String, Object> body, Exception ex, HttpStatus httpStatus) {
+        body.put("timestamp", LocalDateTime.now());
+        body.put("status code", httpStatus.value());
+        body.put("status", httpStatus);
+        body.put("reason", httpStatus.getReasonPhrase().toUpperCase());
+        body.put("message", ex.getMessage());
     }
 }

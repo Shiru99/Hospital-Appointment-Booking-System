@@ -57,9 +57,11 @@ class AppointmentsController {
     public AppointmentResponse addAppointment(@RequestBody @Valid AppointmentRequest appointmentRequest,
             BindingResult errors) throws InvalidInputsException {
         if (errors.hasErrors()) {
+            System.out.println(errors);
             throw new InvalidInputsException(errors);
         }
-        return appointmentService.addAppointment(appointmentRequest);
+        System.out.println("hello");
+        return appointmentService.saveAppointment(appointmentRequest);
     }
 
     @PutMapping(value = "/appointments/{Id}", produces = "application/json")
