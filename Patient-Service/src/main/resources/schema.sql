@@ -35,6 +35,7 @@ CREATE TABLE `Appointments` (
   `slot` ENUM ('UNKNOWN', 'MORNING1', 'MORNING2', 'MORNING3', 'AFTERNOON1', 'AFTERNOON2', 'AFTERNOON3', 'EVENING1', 'EVENING2', 'EVENING3'),
   `status` ENUM ('UNKNOWN', 'DONE', 'ACTIVE', 'CANCELLED'),
   `message` varchar(1000),
+  `paid` ENUM ('UNKNOWN', 'YES', 'NO'),
   UNIQUE KEY `my_uniq_id_1` (`doctor_id`,`date`, `slot`),
   UNIQUE KEY `my_uniq_id_2` (`patient_id`,`date`, `slot`)
 );
