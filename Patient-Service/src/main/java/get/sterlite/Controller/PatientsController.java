@@ -41,19 +41,19 @@ public class PatientsController {
         return patientService.getAllPatients();
     }
 
-    @GetMapping(value ="/patients/{id}", produces = "application/json")
-    public PatientResponse getPatientByID(@PathVariable("id") String id) {
-        return patientService.getPatient(id);
+    @GetMapping(value ="/patients/{patientId}", produces = "application/json")
+    public PatientResponse getPatientByID(@PathVariable("patientId") String patientId) {
+        return patientService.getPatient(patientId);
     }
 
-    @PutMapping(value ="/patients/{id}",consumes = "application/json", produces = "application/json")
-    public PatientResponse updatePatient(@PathVariable("id") String id, @RequestBody PatientRequest patientRequest) throws InvalidInputsException {
-        return patientService.updatePatientDetails(id, patientRequest);
+    @PutMapping(value ="/patients/{patientId}",consumes = "application/json", produces = "application/json")
+    public PatientResponse updatePatient(@PathVariable("patientId") String patientId, @RequestBody PatientRequest patientRequest) throws InvalidInputsException {
+        return patientService.updatePatientDetails(patientId, patientRequest);
     }
 
-    @DeleteMapping("/patients/{id}")
-    public PatientResponse deletePatient(@PathVariable("id") String id) {
-        return patientService.deletePatient(id);
+    @DeleteMapping("/patients/{patientId}")
+    public PatientResponse deletePatient(@PathVariable("patientId") String patientId) {
+        return patientService.deletePatient(patientId);
     }
     
 }

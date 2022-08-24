@@ -10,5 +10,4 @@ import get.sterlite.model.Patient;
 @Repository
 public interface PatientRepository extends CrudRepository<Patient,String> {
     Optional<Patient> findByMobileNum(String mobileNum);
-    Optional<Patient> findByFullName(String fullName);
 }

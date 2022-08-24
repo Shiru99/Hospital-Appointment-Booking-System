@@ -23,7 +23,6 @@ public class PatientService {
     UserService userService;
 
     public void savePatient(Patient patient) {
-
         if (!isPatientExist(patient.getMobileNum())) {
             patientRepository.save(patient);
         } else {
@@ -33,30 +32,30 @@ public class PatientService {
 
     }
 
-    public boolean isPatientExist(String patientID) {
-        return patientRepository.findByMobileNum(patientID).isPresent();
+    public boolean isPatientExist(String patientId) {
+        return patientRepository.findByMobileNum(patientId).isPresent();
     }
 
     public List<Patient> getAllPatients() {
         return (List<Patient>) patientRepository.findAll();
     }
 
-    public PatientResponse getPatient(String id) {
-        Optional<Patient> patient = patientRepository.findByMobileNum(id);
+    public PatientResponse getPatient(String patientId) {
+        Optional<Patient> patient = patientRepository.findByMobileNum(patientId);
 
         if (patient.isPresent())
             return new PatientResponse("success", patient.get());
         else
-            return new PatientResponse("No patient found with ID : " + id, null);
+            return new PatientResponse("No patient found with ID : " + patientId, null);
 
     }
 
-    public PatientResponse updatePatientDetails(String mobileNum, PatientRequest patientRequest) throws InvalidInputsException {
-        if (!isPatientExist(mobileNum)) {
-            return new PatientResponse("No patient found with Mobile Number : " + mobileNum, null);
+    public PatientResponse updatePatientDetails(String patientId, PatientRequest patientRequest) throws InvalidInputsException {
+        if (!isPatientExist(patientId)) {
+            return new PatientResponse("No patient found with Mobile Number : " + patientId, null);
         } else {
-            if (!mobileNum.equals(patientRequest.getPatient().getMobileNum())) {
-                throw new InvalidInputsException("Incorrect mobile no. for Patient ID : " + mobileNum);
+            if (!patientId.equals(patientRequest.getPatient().getMobileNum())) {
+                throw new InvalidInputsException("Incorrect mobile no. for Patient ID : " + patientId);
             }
 
             patientRepository.save(patientRequest.getPatient());
@@ -64,13 +63,13 @@ public class PatientService {
         }
     }
 
-    public PatientResponse deletePatient(String id) {
-        Optional<Patient> patient = patientRepository.findByMobileNum(id);
+    public PatientResponse deletePatient(String patientId) {
+        Optional<Patient> patient = patientRepository.findByMobileNum(patientId);
         if (patient.isPresent()) {
-            userService.deleteUser(id);
+            userService.deleteUser(patientId);
             return new PatientResponse("success", patient.get());
         } else {
-            return new PatientResponse("No patient found with ID : " + id, null);
+            return new PatientResponse("No patient found with ID : " + patientId, null);
         }
     }
 

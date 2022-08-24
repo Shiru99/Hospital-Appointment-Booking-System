@@ -13,7 +13,7 @@ import javax.validation.constraints.Size;
 @Table(name = "Patients")
 public class Patient {
 
-    @Id 
+    @Id
     @NotNull(message = "Mobile number is required")
     @Size(min = 10, max = 10, message = "Mobile no. must be 10 digits")
     @Column(name = "patient_id", unique = true, length = 10)

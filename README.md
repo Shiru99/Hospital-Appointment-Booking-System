@@ -65,6 +65,7 @@ Reference Website : https://balcomedicalcentre.com/
 ### Testing : JUnit & [Thunder Client](https://marketplace.visualstudio.com/items?itemName=rangav.vscode-thunder-client)
 
 - [x] Login
+- [x] Patient
 - [ ] Doctor
 - [ ] Booking
 - [ ] Payment
@@ -89,5 +90,6 @@ Reference Website : https://balcomedicalcentre.com/
 ## TODO
 
 - [X] getAppointmentsByDifferentQueries
+- [ ] Payment - appointment booking
 
 
