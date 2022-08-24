@@ -41,23 +41,23 @@ public class DoctorsController {
         return doctorService.getAllDoctors();
     }
 
-    @GetMapping(value ="/doctors/{id}", produces = "application/json")
-    public DoctorResponse getDoctorByID(@PathVariable("id") String id) {
-        return doctorService.getDoctor(id);
+    @GetMapping(value ="/doctors/{doctorId}", produces = "application/json")
+    public DoctorResponse getDoctorByID(@PathVariable("doctorId") String doctorId) {
+        return doctorService.getDoctor(doctorId);
     }
     @GetMapping(value ="/doctors/search/{query}", produces = "application/json")
     public List<Doctor>  getDoctorsBySearchQuery(@PathVariable("query") String query) {
         return doctorService.getDoctorsBySearchQuery(query);
     }
 
-    @PutMapping(value ="/doctors/{id}",consumes = "application/json", produces = "application/json")
-    public DoctorResponse updateDoctor(@PathVariable("id") String id, @RequestBody DoctorRequest doctorRequest) throws InvalidInputsException {
-        return doctorService.updateDoctorDetails(id, doctorRequest);
+    @PutMapping(value ="/doctors/{doctorId}",consumes = "application/json", produces = "application/json")
+    public DoctorResponse updateDoctor(@PathVariable("doctorId") String doctorId, @RequestBody DoctorRequest doctorRequest) throws InvalidInputsException {
+        return doctorService.updateDoctor(doctorId, doctorRequest);
     }
 
-    @DeleteMapping("/doctors/{id}")
-    public DoctorResponse deleteDoctor(@PathVariable("id") String id) {
-        return doctorService.deleteDoctor(id);
+    @DeleteMapping("/doctors/{doctorId}")
+    public DoctorResponse deleteDoctor(@PathVariable("doctorId") String doctorId) {
+        return doctorService.deleteDoctor(doctorId);
     }
     
 }

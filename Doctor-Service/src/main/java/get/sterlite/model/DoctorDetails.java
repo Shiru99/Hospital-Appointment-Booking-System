@@ -35,7 +35,7 @@ public class DoctorDetails {
     DoctorDetails() {
     }
 
-    DoctorDetails(String mobileNum, String education, String workExperience, String interest) {
+    public DoctorDetails(String mobileNum, String education, String workExperience, String interest) {
         this.mobileNum = mobileNum;
         this.education = education;
         this.workExperience = workExperience;

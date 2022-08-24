@@ -53,55 +53,55 @@ public class DoctorService {
         return (List<Doctor>) doctorRepository.findAll();
     }
 
-    public DoctorResponse getDoctor(String id) {
-        Optional<Doctor> doctor = doctorRepository.findByMobileNum(id);
+    public DoctorResponse getDoctor(String doctorId) {
+        Optional<Doctor> doctor = doctorRepository.findByMobileNum(doctorId);
 
         if (doctor.isPresent())
-            return new DoctorResponse("success", doctor.get(), doctorDetailsService.getDoctorDetails(id));
+            return new DoctorResponse("success", doctor.get(), doctorDetailsService.getDoctorDetails(doctorId));
         else
-            return new DoctorResponse("No Doctor found with ID : " + id, null);
+            return new DoctorResponse("No doctor found with ID : " + doctorId, null);
 
     }
 
-    public DoctorResponse updateDoctorDetails(String mobileNum, DoctorRequest doctorRequest)
+    public DoctorResponse updateDoctor(String doctorId, DoctorRequest doctorRequest)
             throws InvalidInputsException {
-        if (!isDoctorExist(mobileNum)) {
-            return new DoctorResponse("No Doctor found with ID : " + mobileNum, null, null);
+        if (!isDoctorExist(doctorId)) {
+            return new DoctorResponse("No doctor found with ID : " + doctorId, null, null);
         } else {
 
-            DoctorResponse doctorResponse = getDoctor(mobileNum);
+            DoctorResponse doctorResponse = getDoctor(doctorId);
 
             if (doctorRequest.getDoctor() != null) {
-                if (!mobileNum.equals(doctorRequest.getDoctor().getMobileNum())) {
-                    throw new InvalidInputsException("Incorrect mobile no. for Doctor ID : " + mobileNum);
+                if (!doctorId.equals(doctorRequest.getDoctor().getMobileNum())) {
+                    throw new InvalidInputsException("Incorrect mobile no. for Doctor ID : " + doctorId);
                 }
                 doctorRepository.save(doctorRequest.getDoctor());
                 doctorResponse.setDoctor(doctorRequest.getDoctor());
             }
 
             if (doctorRequest.getDoctorDetails() != null) {
-                if (!mobileNum.equals(doctorRequest.getDoctorDetails().getMobileNum())) {
-                    throw new InvalidInputsException("Incorrect mobile no. for Doctor ID : " + mobileNum);
+                if (!doctorId.equals(doctorRequest.getDoctorDetails().getMobileNum())) {
+                    throw new InvalidInputsException("Incorrect mobile no. for Doctor ID : " + doctorId);
                 }
                 doctorDetailsService.saveDoctorDetails(doctorRequest.getDoctorDetails());
                 doctorResponse.setDoctorDetails(doctorRequest.getDoctorDetails());
             }
-            doctorResponse.setStatus("Success");
+            doctorResponse.setStatus("success");
             return doctorResponse;
         }
     }
 
-    public DoctorResponse deleteDoctor(String id) {
-        Optional<Doctor> doctor = doctorRepository.findByMobileNum(id);
+    public DoctorResponse deleteDoctor(String doctorId) {
+        Optional<Doctor> doctor = doctorRepository.findByMobileNum(doctorId);
         if (doctor.isPresent()) {
 
-            userService.deleteUser(id);
+            userService.deleteUser(doctorId);
 
-            DoctorDetails doctorDetails = doctorDetailsService.getDoctorDetails(id);
+            DoctorDetails doctorDetails = doctorDetailsService.getDoctorDetails(doctorId);
 
             return new DoctorResponse("success", doctor.get(), doctorDetails);
         } else {
-            return new DoctorResponse("No Doctor found with ID : " + id, null);
+            return new DoctorResponse("No doctor found with ID : " + doctorId, null);
         }
     }
 
