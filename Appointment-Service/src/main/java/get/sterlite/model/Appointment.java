@@ -57,6 +57,10 @@ public class Appointment {
     @Column(name = "message")
     private String message;
 
+    @Column(name = "paid")
+    @Enumerated(EnumType.STRING)
+    private Paid paid = Paid.UNKNOWN;
+
     public Appointment() {
     }
 
@@ -68,6 +72,17 @@ public class Appointment {
         this.slot = slot;
         this.status = status;
         this.message = message;
+    }
+
+    public Appointment(String doctorId, String patientId, Date appointmentDate, Slot slot, Status status,
+            String message, Paid paid) {
+        this.doctorId = doctorId;
+        this.patientId = patientId;
+        this.appointmentDate = appointmentDate;
+        this.slot = slot;
+        this.status = status;
+        this.message = message;
+        this.paid = paid;
     }
 
     public int getAppointmentId() {
@@ -126,11 +141,20 @@ public class Appointment {
         this.message = message;
     }
 
+    public Paid getPaid() {
+        return paid;
+    }
+
+    public void setPaid(Paid paid) {
+        this.paid = paid;
+    }
+
     @Override
     public String toString() {
         return "Appointment [appointmentId=" + appointmentId + ", doctorId=" + doctorId + ", patientId=" + patientId
-                + ", appointmentDate=" + appointmentDate + ", slot=" + slot + ", status=" + status + ", message=" + message
-                + "]";
+                + ", appointmentDate=" + appointmentDate + ", slot=" + slot + ", status=" + status + ", message="
+                + message + ", paid=" + paid + "]";
+
     }
 
 }

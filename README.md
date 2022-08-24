@@ -60,6 +60,7 @@ Reference Website : https://balcomedicalcentre.com/
     * GET /appointments/patients/{patientId}/{status}
     * GET /appointments/doctors/{doctorId}/{status}
     * GET /appointments/free-slots/{doctorId}/{date}
+    * GET /payment/pay/{appointmentId}
 
 
 ### Testing : JUnit & [Thunder Client](https://marketplace.visualstudio.com/items?itemName=rangav.vscode-thunder-client)
@@ -68,7 +69,7 @@ Reference Website : https://balcomedicalcentre.com/
 - [x] Patient
 - [x] Doctor
 - [x] Booking
-- [ ] Payment
+- [x] Payment
 
 ---
 
@@ -90,7 +91,8 @@ Reference Website : https://balcomedicalcentre.com/
 ## TODO
 
 
-- [ ] Payment - appointment booking
+- [X] Payment - appointment booking
+- [ ] JWT - password verification (fix)
 - [-] API gateway
 
 

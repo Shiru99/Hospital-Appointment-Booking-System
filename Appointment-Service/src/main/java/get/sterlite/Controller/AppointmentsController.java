@@ -57,10 +57,8 @@ class AppointmentsController {
     public AppointmentResponse addAppointment(@RequestBody @Valid AppointmentRequest appointmentRequest,
             BindingResult errors) throws InvalidInputsException {
         if (errors.hasErrors()) {
-            System.out.println(errors);
             throw new InvalidInputsException(errors);
         }
-        System.out.println("hello");
         return appointmentService.saveAppointment(appointmentRequest);
     }
 
