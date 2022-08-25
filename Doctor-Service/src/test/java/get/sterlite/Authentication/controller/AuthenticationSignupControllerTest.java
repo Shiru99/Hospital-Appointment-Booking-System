@@ -1,8 +1,8 @@
 package get.sterlite.Authentication.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -48,7 +48,7 @@ public class AuthenticationSignupControllerTest {
 
        
         authenticationController = new AuthenticationController();
-        authenticationController.userService = userService;
+        authenticationController.userDetailsService = userService;
         authenticationController.doctorService = doctorService;
         authenticationController.passwordEncoder = passwordEncoder();
         authenticationController.jwtTokenUtil = new JwtUtil();
@@ -114,6 +114,6 @@ public class AuthenticationSignupControllerTest {
         
         AuthenticationResponse authenticationResponse = (AuthenticationResponse) response.getBody();
 
-        assertTrue(authenticationController.jwtTokenUtil.validateToken(authenticationResponse.getJwt()));
+        assertFalse(authenticationController.jwtTokenUtil.isTokenExpired(authenticationResponse.getJwt()));
     }
 }

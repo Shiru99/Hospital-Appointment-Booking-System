@@ -92,7 +92,9 @@ Reference Website : https://balcomedicalcentre.com/
 
 
 - [X] Payment - appointment booking
-- [ ] JWT - password verification (fix)
+- [X] JWT - password verification (fix)
+- [X] Testing
+- [ ] Shifting
 - [-] API gateway
 
 

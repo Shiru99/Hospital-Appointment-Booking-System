@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.Claims;
@@ -48,7 +49,7 @@ public class JwtUtil {
         }
     }
 
-    private Boolean isTokenExpired(String token) throws MalformedJwtException, ExpiredJwtException {
+    public Boolean isTokenExpired(String token) throws MalformedJwtException, ExpiredJwtException {
         return extractExpiration(token).before(new Date());
     }
 
@@ -66,7 +67,8 @@ public class JwtUtil {
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY).compact();
     }
 
-    public Boolean validateToken(String JWTToken) throws MalformedJwtException, ExpiredJwtException {
-        return !isTokenExpired(JWTToken);
+    public Boolean validateToken(String JWTToken, UserDetails userDetails) throws MalformedJwtException, ExpiredJwtException {
+        final String username = extractUsername(JWTToken);
+        return (username.equals(userDetails.getUsername()) && !isTokenExpired(JWTToken));
     }
 }

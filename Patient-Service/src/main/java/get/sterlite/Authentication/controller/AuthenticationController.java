@@ -29,8 +29,8 @@ class AuthenticationController {
 	@Autowired
 	protected JwtUtil jwtTokenUtil;
 
-	@Autowired
-	protected UserService userService;
+	@Autowired 
+	UserService userDetailsService;
 
 	@Autowired
 	PatientService patientService;
@@ -45,7 +45,7 @@ class AuthenticationController {
 		}
 		boolean passwordMatch = passwordEncoder.matches(
 				loginUser.getPassword(),
-				userService.getUserPassword(loginUser.getMobileNum()));
+				userDetailsService.getUserPassword(loginUser.getMobileNum()));
 		if (passwordMatch) {
 			if (!patientService.isPatientExist(loginUser.getMobileNum())) {
 				throw new LoginException("Doctor can't login as `Patient`");
@@ -70,7 +70,7 @@ class AuthenticationController {
 
 		try {
 
-			userService.saveUser(patientRequest.getPatient());
+			userDetailsService.saveUser(patientRequest.getPatient());
 			patientService.savePatient(patientRequest.getPatient());
 			final String jwt = jwtTokenUtil
 					.generateToken(patientRequest.getPatient().getMobileNum());

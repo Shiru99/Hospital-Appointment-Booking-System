@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import get.sterlite.Authentication.model.LoginUser;
 import get.sterlite.Authentication.repository.LoginUserRepository;
-import get.sterlite.model.Doctor;
 
 @Service("UserService")
 public class UserService implements UserDetailsService {
@@ -42,19 +41,7 @@ public class UserService implements UserDetailsService {
         return loginUserRepository.findByMobileNum(mobileNum).isPresent();
     }
 
-    public void saveUser(Doctor doctor) {
-        if (!isUserExist(doctor.getMobileNum())) {
-            LoginUser loginUser = new LoginUser(doctor.getMobileNum(),
-                    passwordEncoder().encode(doctor.getPassword()));
+    
 
-            loginUserRepository.save(loginUser);
-        } else {
-            throw new RuntimeException("User already exist with mobileNum: " + doctor.getMobileNum());
-        }
-    }
-
-    public void deleteUser(String id) {
-        LoginUser loginUser = loginUserRepository.findByMobileNum(id).get();
-        loginUserRepository.delete(loginUser);
-    }
+    
 }
