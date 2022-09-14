@@ -61,6 +61,7 @@ Reference Website : https://balcomedicalcentre.com/
     * GET /appointments/doctors/{doctorId}/{status}
     * GET /appointments/free-slots/{doctorId}/{date}
     * GET /payment/pay/{appointmentId}
+    * GET /appointmentDetails/{appointmentId}
 
 
 ### Testing : JUnit & [Thunder Client](https://marketplace.visualstudio.com/items?itemName=rangav.vscode-thunder-client)
@@ -90,11 +91,8 @@ Reference Website : https://balcomedicalcentre.com/
 
 ## TODO
 
-
-- [X] Payment - appointment booking
-- [X] JWT - password verification (fix)
-- [X] Testing
-- [ ] Shifting
-- [-] API gateway
+- [X] Communication : Appointment - Patient & Doctor
+- [ ] Error handling
+- [ ] API gateway
 
 

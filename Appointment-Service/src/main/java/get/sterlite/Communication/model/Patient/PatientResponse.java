@@ -1,4 +1,4 @@
-package get.sterlite.model;
+package get.sterlite.Communication.model.Patient;
 
 public class PatientResponse {
     private String status;
@@ -23,10 +23,5 @@ public class PatientResponse {
     }
     public void setPatient(Patient patient) {
         this.patient = patient;
-    }
-
-    @Override
-    public String toString() {
-        return "PatientResponse [patient=" + patient + ", status=" + status + "]";
     }
 }

@@ -1,6 +1,10 @@
 INSERT INTO `Users` (`mobile_num`, `password`)
 VALUES
     (
+        '0000000000',
+        '$2a$10$oCRuhNF0fDycAy9TdbdtOeZ8QcnH4JdkdH.8Hty.iDZNg0hBNNttS'
+    ),
+    (
         '1234567890',
         '$2a$10$oCRuhNF0fDycAy9TdbdtOeZ8QcnH4JdkdH.8Hty.iDZNg0hBNNttS'
     ),
