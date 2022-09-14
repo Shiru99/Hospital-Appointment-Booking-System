@@ -23,6 +23,7 @@ import get.sterlite.model.Status;
 import get.sterlite.repository.AppointmentRepository;
 
 @TestInstance(Lifecycle.PER_CLASS)
+@SuppressWarnings("deprecation")
 public class AppointmentServiceTest {
 
     private AppointmentService appointmentService;

@@ -2,6 +2,8 @@ package get.sterlite.Controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -51,7 +53,7 @@ public class DoctorsController {
     }
 
     @PutMapping(value ="/doctors/{doctorId}",consumes = "application/json", produces = "application/json")
-    public DoctorResponse updateDoctor(@PathVariable("doctorId") String doctorId, @RequestBody DoctorRequest doctorRequest) throws InvalidInputsException {
+    public DoctorResponse updateDoctor(@PathVariable("doctorId") String doctorId, @Valid @RequestBody DoctorRequest doctorRequest) throws InvalidInputsException {
         return doctorService.updateDoctor(doctorId, doctorRequest);
     }
 
@@ -59,5 +61,5 @@ public class DoctorsController {
     public DoctorResponse deleteDoctor(@PathVariable("doctorId") String doctorId) {
         return doctorService.deleteDoctor(doctorId);
     }
-    
+
 }

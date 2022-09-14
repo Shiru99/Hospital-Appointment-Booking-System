@@ -1,13 +1,13 @@
 package get.sterlite.Authentication.controller;
 
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -39,7 +39,7 @@ class AuthenticationController {
 	protected PasswordEncoder passwordEncoder;
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public ResponseEntity<?> loginAndCreateAuthenticationToken(@RequestBody @Validated LoginUser loginUser, BindingResult errors) throws Exception {
+	public ResponseEntity<?> loginAndCreateAuthenticationToken(@RequestBody @Valid LoginUser loginUser, BindingResult errors) throws Exception {
 		if (errors.hasErrors()) {
 			throw new InvalidInputsException(errors);
 		}
@@ -61,7 +61,7 @@ class AuthenticationController {
 	@Transactional
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
 	public ResponseEntity<?> signupAndCreateAuthenticationToken(
-			@RequestBody @Validated  DoctorSignupRequest doctorRequest, BindingResult errors
+			@RequestBody @Valid  DoctorSignupRequest doctorRequest, BindingResult errors
 			 ) throws Exception {
 
 		if (errors.hasErrors()) {

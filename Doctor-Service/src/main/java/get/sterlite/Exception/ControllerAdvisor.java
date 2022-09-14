@@ -49,7 +49,6 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex, HttpHeaders headers,
             HttpStatus status, WebRequest request) {
-
         HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
 
         Map<String, Object> body = getResponseBody(ex, request, httpStatus);
@@ -60,7 +59,7 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
                 .map(x -> x.getDefaultMessage())
                 .collect(Collectors.toList());
 
-        body.put("errors", errors);
+        body.put("message", errors);
 
         return new ResponseEntity<>(body, httpStatus);
     }
@@ -85,7 +84,6 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleAllException(
             Exception ex, WebRequest request) {
-
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 
         Map<String, Object> body = getResponseBody(ex, request, httpStatus);
@@ -108,13 +106,17 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
             httpStatus = HttpStatus.BAD_REQUEST;
             updateResponseBody(body, ex, httpStatus);
             body.put("message", "Unexpected Rollback");
-        } else if (ex instanceof ConversionFailedException || ex instanceof NumberFormatException
+        }
+
+        else if (ex instanceof ConversionFailedException || ex instanceof NumberFormatException
                 || ex instanceof IllegalArgumentException || ex instanceof HttpMessageNotReadableException
                 || ex instanceof MethodArgumentTypeMismatchException) {
             httpStatus = HttpStatus.BAD_REQUEST;
             updateResponseBody(body, ex, httpStatus);
             body.put("message", "Please Check the input values");
-        } else if (ex instanceof UsernameNotFoundException) {
+        }
+
+        else if (ex instanceof UsernameNotFoundException) {
             httpStatus = HttpStatus.UNAUTHORIZED;
             updateResponseBody(body, ex, httpStatus);
         } else {

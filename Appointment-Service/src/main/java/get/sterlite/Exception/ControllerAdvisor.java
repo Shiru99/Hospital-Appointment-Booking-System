@@ -50,7 +50,7 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
                 .map(x -> x.getDefaultMessage())
                 .collect(Collectors.toList());
 
-        body.put("errors", errors);
+        body.put("message", errors);
 
         return new ResponseEntity<>(body, httpStatus);
     }

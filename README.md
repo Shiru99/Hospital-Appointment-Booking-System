@@ -92,7 +92,7 @@ Reference Website : https://balcomedicalcentre.com/
 ## TODO
 
 - [X] Communication : Appointment - Patient & Doctor
-- [ ] Error handling
+- [X] Error handling - Bug Fix
 - [ ] API gateway
 
 
