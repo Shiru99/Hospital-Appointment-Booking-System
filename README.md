@@ -1,11 +1,12 @@
-# Appointment booking system
+# Appointment Booking System
 
 ## Description
 
-There are two main features in this project, the patient can book an appointment in an available slot and the doctor can view his bookings after log-in. The patient should register and sign in to book an appointment. To achieve this we are using two tables, one for a doctor having fields date and slots & another for patients whose fields will be their details, doctor name, and date of appointment along with slots.
+There are two main features in this project, the patient can book an appointment in an available slot and the doctor can view his appointments after log-in. The patient should register and sign in to book an appointment. To achieve this we are using two tables, one for a doctor having fields date and slots & another for patients whose fields will be their details, doctor name, and date of appointment along with slots.
 
-Reference Website : https://balcomedicalcentre.com/
+Reference Website :  
 
+[comment]: # (https://balcomedicalcentre.com/)
 
 ---
 
